@@ -1,0 +1,45 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.popover {
+    &__positioner {
+        isolation: isolate;
+        z-index: 50;
+    }
+
+    &__content {
+        @include popup;
+        @include fade-scale;
+        z-index: 50;
+        display: flex;
+        width: 288px;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        border-radius: $radius-lg;
+        box-shadow:
+            0 4px 6px -1px rgb(0 0 0 / 0.1),
+            0 2px 4px -2px rgb(0 0 0 / 0.1),
+            0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+        transform-origin: var(--transform-origin);
+
+        &--anchored {
+            width: var(--anchor-width);
+            padding: 0;
+        }
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__title {
+        font-weight: 500;
+    }
+
+    &__description {
+        color: $color-muted-foreground;
+    }
+}

@@ -1,0 +1,83 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.badge {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: fit-content;
+    height: 20px;
+    padding: 2px 8px;
+    border: 1px solid transparent;
+    border-radius: $radius-pill;
+    overflow: hidden;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+        background-color 0.15s,
+        border-color 0.15s,
+        box-shadow 0.15s;
+
+    @include focus-ring;
+    @include invalid-ring;
+
+    svg {
+        width: 12px;
+        height: 12px;
+        pointer-events: none;
+    }
+
+    &--default {
+        background: $color-primary;
+        color: $color-primary-foreground;
+    }
+
+    &--secondary {
+        background: $color-secondary;
+        color: $color-primary;
+    }
+
+    &--destructive {
+        background: color-mix(in oklch, $color-destructive 10%, transparent);
+        color: $color-destructive;
+    }
+
+    &--outline {
+        border-color: $color-border;
+        color: $color-foreground;
+    }
+
+    &--ghost:hover {
+        background: $color-subtle;
+        color: $color-muted-foreground;
+    }
+
+    &--link {
+        color: $color-primary;
+        text-underline-offset: 4px;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &--default:is(a):hover {
+        background: color-mix(in oklch, $color-primary 80%, transparent);
+    }
+
+    &--secondary:is(a):hover {
+        background: color-mix(in oklch, $color-secondary 80%, transparent);
+    }
+
+    &--destructive:is(a):hover {
+        background: color-mix(in oklch, $color-destructive 20%, transparent);
+    }
+
+    &--outline:is(a):hover {
+        background: $color-subtle;
+        color: $color-muted-foreground;
+    }
+}

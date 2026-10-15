@@ -1,0 +1,9 @@
+@use 'mixins' as *;
+
+.textarea {
+    @include field;
+    display: flex;
+    min-height: 64px;
+    padding: 8px 10px;
+    field-sizing: content;
+}
