@@ -1,0 +1,39 @@
+@use 'tokens' as *;
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+html {
+    font-family: $font-sans;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background: $color-background;
+    color: $color-ink;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg,
+video,
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
