@@ -1,0 +1,73 @@
+@use 'tokens' as *;
+
+.table-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    caption-side: bottom;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+
+    &__header tr {
+        border-bottom: 1px solid $color-border;
+    }
+
+    &__body tr:last-child {
+        border-bottom: 0;
+    }
+
+    &__footer {
+        border-top: 1px solid $color-border;
+        background: color-mix(in oklch, $color-subtle 50%, transparent);
+        font-weight: 500;
+
+        > tr:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    &__row {
+        border-bottom: 1px solid $color-border;
+        transition: background-color 0.15s;
+
+        &:hover,
+        &:has([aria-expanded='true']) {
+            background: color-mix(in oklch, $color-subtle 50%, transparent);
+        }
+
+        &[data-state='selected'] {
+            background: $color-subtle;
+        }
+    }
+
+    &__head {
+        height: 40px;
+        padding: 0 8px;
+        text-align: left;
+        vertical-align: middle;
+        font-weight: 500;
+        white-space: nowrap;
+        color: $color-foreground;
+    }
+
+    &__cell {
+        padding: 8px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    &__head:has([role='checkbox']),
+    &__cell:has([role='checkbox']) {
+        padding-right: 0;
+    }
+
+    &__caption {
+        margin-top: 16px;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+    }
+}

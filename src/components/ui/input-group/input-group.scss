@@ -1,0 +1,154 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    border: 1px solid $color-input;
+    border-radius: $radius-lg;
+    outline: none;
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+
+    &:has(.input-group__control:focus-visible) {
+        border-color: $color-ring;
+        box-shadow: 0 0 0 3px color-mix(in oklch, $color-ring 50%, transparent);
+    }
+
+    &:has(.input-group__control[aria-invalid='true']) {
+        border-color: $color-destructive;
+        box-shadow: 0 0 0 3px color-mix(in oklch, $color-destructive 20%, transparent);
+    }
+
+    &:has(:disabled) {
+        opacity: 0.5;
+        background: color-mix(in oklch, $color-input 50%, transparent);
+    }
+
+    &:has(> .input-group__addon--block-start),
+    &:has(> .input-group__addon--block-end) {
+        height: auto;
+        flex-direction: column;
+    }
+
+    &:has(> textarea) {
+        height: auto;
+    }
+
+    &:has(> .input-group__addon--inline-start) > input {
+        padding-left: 6px;
+    }
+
+    &:has(> .input-group__addon--inline-end) > input {
+        padding-right: 6px;
+    }
+
+    &:has(> .input-group__addon--block-start) > input {
+        padding-bottom: 12px;
+    }
+
+    &:has(> .input-group__addon--block-end) > input {
+        padding-top: 12px;
+    }
+
+    &__addon {
+        display: flex;
+        height: auto;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 0;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: text;
+        user-select: none;
+
+        > svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        > kbd {
+            border-radius: calc(#{$radius-lg} - 5px);
+        }
+
+        &--inline-start {
+            order: -1;
+            padding-left: 8px;
+
+            &:has(> button) {
+                margin-left: -0.3rem;
+            }
+
+            &:has(> kbd) {
+                margin-left: -0.15rem;
+            }
+        }
+
+        &--inline-end {
+            order: 1;
+            padding-right: 8px;
+
+            &:has(> button) {
+                margin-right: -0.3rem;
+            }
+
+            &:has(> kbd) {
+                margin-right: -0.15rem;
+            }
+        }
+
+        &--block-start {
+            order: -1;
+            width: 100%;
+            justify-content: flex-start;
+            padding: 8px 10px 0;
+        }
+
+        &--block-end {
+            order: 1;
+            width: 100%;
+            justify-content: flex-start;
+            padding: 0 10px 8px;
+        }
+    }
+
+    &__button {
+        box-shadow: none;
+    }
+
+    &__text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+
+        svg {
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+        }
+    }
+
+    .input.input-group__control,
+    .textarea.input-group__control {
+        flex: 1;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .textarea.input-group__control {
+        resize: none;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+}

@@ -1,0 +1,91 @@
+@use 'tokens' as *;
+
+.card {
+    --card-spacing: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-spacing);
+    padding: var(--card-spacing) 0;
+    border-radius: $radius-xl;
+    overflow: hidden;
+    background: $color-surface;
+    color: $color-foreground;
+    font-size: 0.875rem;
+    box-shadow: 0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+
+    &--sm {
+        --card-spacing: 12px;
+    }
+
+    &:has(.card__footer) {
+        padding-bottom: 0;
+    }
+
+    &:has(> img:first-child) {
+        padding-top: 0;
+    }
+
+    > img:first-child {
+        border-top-left-radius: $radius-xl;
+        border-top-right-radius: $radius-xl;
+    }
+
+    > img:last-child {
+        border-bottom-left-radius: $radius-xl;
+        border-bottom-right-radius: $radius-xl;
+    }
+
+    &__header {
+        display: grid;
+        align-items: start;
+        grid-auto-rows: min-content;
+        gap: 4px;
+        padding: 0 var(--card-spacing);
+        border-top-left-radius: $radius-xl;
+        border-top-right-radius: $radius-xl;
+
+        &:has(.card__action) {
+            grid-template-columns: 1fr auto;
+        }
+
+        &:has(.card__description) {
+            grid-template-rows: auto auto;
+        }
+    }
+
+    &__title {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    &--sm &__title {
+        font-size: 0.875rem;
+    }
+
+    &__description {
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+    }
+
+    &__action {
+        grid-column-start: 2;
+        grid-row: 1 / span 2;
+        align-self: start;
+        justify-self: end;
+    }
+
+    &__content {
+        padding: 0 var(--card-spacing);
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        padding: var(--card-spacing);
+        border-top: 1px solid $color-border;
+        border-bottom-left-radius: $radius-xl;
+        border-bottom-right-radius: $radius-xl;
+        background: color-mix(in oklch, $color-subtle 50%, transparent);
+    }
+}

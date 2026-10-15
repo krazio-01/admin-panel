@@ -1,0 +1,20 @@
+@use 'mixins' as *;
+@use 'tokens' as *;
+
+.input {
+    @include field;
+    height: 32px;
+
+    &::file-selector-button {
+        display: inline-flex;
+        height: 24px;
+        margin-right: 8px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: $color-foreground;
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}

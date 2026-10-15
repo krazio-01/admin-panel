@@ -1,0 +1,80 @@
+@use 'tokens' as *;
+
+@mixin card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: $space-6;
+}
+
+@mixin from-md {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin focus-ring {
+    &:focus-visible {
+        border-color: $color-ring;
+        box-shadow: 0 0 0 3px color-mix(in oklch, $color-ring 50%, transparent);
+        outline: none;
+    }
+}
+
+@mixin invalid-ring {
+    &[aria-invalid='true'] {
+        border-color: $color-destructive;
+        box-shadow: 0 0 0 3px color-mix(in oklch, $color-destructive 20%, transparent);
+    }
+}
+
+@mixin field {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid $color-input;
+    border-radius: $radius-lg;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 4px 10px;
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+
+    &::placeholder {
+        color: $color-muted-foreground;
+    }
+
+    &:disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.5;
+        background: color-mix(in oklch, $color-input 50%, transparent);
+    }
+
+    @include focus-ring;
+    @include invalid-ring;
+}
+
+@mixin popup {
+    background: $color-popover;
+    color: $color-foreground;
+    box-shadow: 0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+    font-size: 0.875rem;
+    outline: none;
+}
+
+@mixin fade-scale {
+    opacity: 1;
+    scale: 1;
+    transition:
+        opacity 0.1s,
+        scale 0.1s;
+
+    &[data-starting-style],
+    &[data-ending-style] {
+        opacity: 0;
+        scale: 0.95;
+    }
+}
