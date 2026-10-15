@@ -1,0 +1,8 @@
+docs
+.next
+package-lock.json
+playwright-report
+test-results
+tests/e2e/.runtime.json
+tests/e2e/.inbox.jsonl
+.vitest
