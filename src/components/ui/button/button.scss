@@ -12,7 +12,6 @@
     border: 1px solid transparent;
     border-radius: $radius-lg;
     background-clip: padding-box;
-    font: inherit;
     font-size: 0.875rem;
     font-weight: 500;
     white-space: nowrap;
@@ -62,11 +61,11 @@
     }
 
     &--secondary {
-        background: $color-secondary;
+        background: $color-subtle;
         color: $color-primary;
 
         &:hover {
-            background: color-mix(in oklch, $color-secondary, $color-foreground 5%);
+            background: color-mix(in oklch, $color-subtle, $color-foreground 5%);
         }
     }
 

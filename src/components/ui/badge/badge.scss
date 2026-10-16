@@ -22,7 +22,6 @@
         box-shadow 0.15s;
 
     @include focus-ring;
-    @include invalid-ring;
 
     svg {
         width: 12px;
@@ -36,7 +35,7 @@
     }
 
     &--secondary {
-        background: $color-secondary;
+        background: $color-subtle;
         color: $color-primary;
     }
 
@@ -69,7 +68,7 @@
     }
 
     &--secondary:is(a):hover {
-        background: color-mix(in oklch, $color-secondary 80%, transparent);
+        background: color-mix(in oklch, $color-subtle 80%, transparent);
     }
 
     &--destructive:is(a):hover {

@@ -1,6 +1,6 @@
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import './button.scss';
-import { classNames } from '@/utils/class-names';
+import { classNames, type WithStringClassName } from '@/utils/class-names';
 
 type ButtonVariant = 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'link';
 type ButtonSize = 'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg';
@@ -10,8 +10,7 @@ function Button({
     variant = 'default',
     size = 'default',
     ...props
-}: Omit<ButtonPrimitive.Props, 'className'> & {
-    className?: string;
+}: WithStringClassName<ButtonPrimitive.Props> & {
     variant?: ButtonVariant;
     size?: ButtonSize;
 }) {

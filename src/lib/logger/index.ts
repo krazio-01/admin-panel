@@ -1,6 +1,14 @@
-import pino from 'pino';
+import pino, { type LoggerOptions } from 'pino';
 
-export const LOG_REDACT_PATHS = [
+const LOG_REDACT_PATHS = [
+    'aadhaar',
+    'aadhaarEncrypted',
+    'phone',
+    'email',
+    'password',
+    'pin',
+    'token',
+    'qrToken',
     '*.aadhaar',
     '*.aadhaarEncrypted',
     '*.phone',
@@ -21,7 +29,9 @@ export const LOG_REDACT_PATHS = [
     'req.headers.authorization',
 ];
 
-export const logger = pino({
+export const loggerOptions: LoggerOptions = {
     level: process.env.LOG_LEVEL ?? 'info',
     redact: { paths: LOG_REDACT_PATHS, censor: '[redacted]' },
-});
+};
+
+export const logger = pino(loggerOptions);

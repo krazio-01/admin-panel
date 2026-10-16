@@ -1,5 +1,3 @@
-'use client';
-
 import type { ComponentProps } from 'react';
 import './label.scss';
 import { classNames } from '@/utils/class-names';

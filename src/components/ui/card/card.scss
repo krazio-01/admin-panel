@@ -1,4 +1,5 @@
 @use 'tokens' as *;
+@use 'mixins' as *;
 
 .card {
     --card-spacing: 16px;
@@ -83,9 +84,6 @@
         display: flex;
         align-items: center;
         padding: var(--card-spacing);
-        border-top: 1px solid $color-border;
-        border-bottom-left-radius: $radius-xl;
-        border-bottom-right-radius: $radius-xl;
-        background: color-mix(in oklch, $color-subtle 50%, transparent);
+        @include footer-surface;
     }
 }
