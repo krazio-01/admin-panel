@@ -10,7 +10,6 @@
     &__content {
         @include popup;
         @include fade-scale;
-        z-index: 50;
         display: flex;
         width: 288px;
         flex-direction: column;

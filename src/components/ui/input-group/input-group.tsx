@@ -18,18 +18,18 @@ function InputGroup({ className, ...props }: ComponentProps<'div'>) {
 function InputGroupAddon({
     className,
     align = 'inline-start',
+    onClick,
     ...props
 }: ComponentProps<'div'> & { align?: InputGroupAddonAlign }) {
     return (
         <div
-            role="group"
-            data-align={align}
             className={classNames('input-group__addon', `input-group__addon--${align}`, className)}
             onClick={(event) => {
-                if ((event.target as HTMLElement).closest('button')) {
-                    return;
-                }
-                event.currentTarget.parentElement?.querySelector('input')?.focus();
+                onClick?.(event);
+                if ((event.target as HTMLElement).closest('button')) return;
+                event.currentTarget.parentElement
+                    ?.querySelector<HTMLElement>('.input-group__control')
+                    ?.focus();
             }}
             {...props}
         />

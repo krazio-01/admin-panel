@@ -6,28 +6,20 @@ import { XIcon } from 'lucide-react';
 import './dialog.scss';
 
 import { Button } from '@/components/ui/button/button';
-import { classNames } from '@/utils/class-names';
+import { classNames, type WithStringClassName } from '@/utils/class-names';
 
-function Dialog({ ...props }: DialogPrimitive.Root.Props) {
-    return <DialogPrimitive.Root {...props} />;
-}
+const Dialog = DialogPrimitive.Root;
 
-function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
-    return <DialogPrimitive.Trigger {...props} />;
-}
+const DialogTrigger = DialogPrimitive.Trigger;
 
-function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
-    return <DialogPrimitive.Portal {...props} />;
-}
+const DialogPortal = DialogPrimitive.Portal;
 
-function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
-    return <DialogPrimitive.Close {...props} />;
-}
+const DialogClose = DialogPrimitive.Close;
 
 function DialogOverlay({
     className,
     ...props
-}: Omit<DialogPrimitive.Backdrop.Props, 'className'> & { className?: string }) {
+}: WithStringClassName<DialogPrimitive.Backdrop.Props>) {
     return (
         <DialogPrimitive.Backdrop className={classNames('dialog__overlay', className)} {...props} />
     );
@@ -38,8 +30,7 @@ function DialogContent({
     children,
     showCloseButton = true,
     ...props
-}: Omit<DialogPrimitive.Popup.Props, 'className'> & {
-    className?: string;
+}: WithStringClassName<DialogPrimitive.Popup.Props> & {
     showCloseButton?: boolean;
 }) {
     return (
@@ -84,17 +75,14 @@ function DialogFooter({
     );
 }
 
-function DialogTitle({
-    className,
-    ...props
-}: Omit<DialogPrimitive.Title.Props, 'className'> & { className?: string }) {
+function DialogTitle({ className, ...props }: WithStringClassName<DialogPrimitive.Title.Props>) {
     return <DialogPrimitive.Title className={classNames('dialog__title', className)} {...props} />;
 }
 
 function DialogDescription({
     className,
     ...props
-}: Omit<DialogPrimitive.Description.Props, 'className'> & { className?: string }) {
+}: WithStringClassName<DialogPrimitive.Description.Props>) {
     return (
         <DialogPrimitive.Description
             className={classNames('dialog__description', className)}

@@ -35,14 +35,14 @@ function CommandDialog({
 }) {
     return (
         <Dialog {...props}>
-            <DialogHeader className="command__sr-only">
-                <DialogTitle>{title}</DialogTitle>
-                <DialogDescription>{description}</DialogDescription>
-            </DialogHeader>
             <DialogContent
                 className={classNames('command__dialog', className)}
                 showCloseButton={showCloseButton}
             >
+                <DialogHeader className="command__sr-only">
+                    <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>{description}</DialogDescription>
+                </DialogHeader>
                 {children}
             </DialogContent>
         </Dialog>
@@ -54,7 +54,7 @@ function CommandInput({ className, ...props }: ComponentProps<typeof CommandPrim
         <div className="command__input-wrapper">
             <InputGroup>
                 <CommandPrimitive.Input
-                    className={classNames('command__input', className)}
+                    className={classNames('input-group__control', 'command__input', className)}
                     {...props}
                 />
                 <InputGroupAddon>

@@ -3,15 +3,11 @@
 import type { ComponentProps } from 'react';
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
 import './popover.scss';
-import { classNames } from '@/utils/class-names';
+import { classNames, type WithStringClassName } from '@/utils/class-names';
 
-function Popover({ ...props }: PopoverPrimitive.Root.Props) {
-    return <PopoverPrimitive.Root {...props} />;
-}
+const Popover = PopoverPrimitive.Root;
 
-function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
-    return <PopoverPrimitive.Trigger {...props} />;
-}
+const PopoverTrigger = PopoverPrimitive.Trigger;
 
 function PopoverContent({
     className,
@@ -20,9 +16,8 @@ function PopoverContent({
     side = 'bottom',
     sideOffset = 4,
     ...props
-}: Omit<PopoverPrimitive.Popup.Props, 'className'> & {
-    className?: string;
-} & Pick<PopoverPrimitive.Positioner.Props, 'align' | 'alignOffset' | 'side' | 'sideOffset'>) {
+}: WithStringClassName<PopoverPrimitive.Popup.Props> &
+    Pick<PopoverPrimitive.Positioner.Props, 'align' | 'alignOffset' | 'side' | 'sideOffset'>) {
     return (
         <PopoverPrimitive.Portal>
             <PopoverPrimitive.Positioner
@@ -45,10 +40,7 @@ function PopoverHeader({ className, ...props }: ComponentProps<'div'>) {
     return <div className={classNames('popover__header', className)} {...props} />;
 }
 
-function PopoverTitle({
-    className,
-    ...props
-}: Omit<PopoverPrimitive.Title.Props, 'className'> & { className?: string }) {
+function PopoverTitle({ className, ...props }: WithStringClassName<PopoverPrimitive.Title.Props>) {
     return (
         <PopoverPrimitive.Title className={classNames('popover__title', className)} {...props} />
     );
@@ -57,7 +49,7 @@ function PopoverTitle({
 function PopoverDescription({
     className,
     ...props
-}: Omit<PopoverPrimitive.Description.Props, 'className'> & { className?: string }) {
+}: WithStringClassName<PopoverPrimitive.Description.Props>) {
     return (
         <PopoverPrimitive.Description
             className={classNames('popover__description', className)}

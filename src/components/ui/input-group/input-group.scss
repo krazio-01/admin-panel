@@ -16,13 +16,11 @@
         box-shadow 0.15s;
 
     &:has(.input-group__control:focus-visible) {
-        border-color: $color-ring;
-        box-shadow: 0 0 0 3px color-mix(in oklch, $color-ring 50%, transparent);
+        @include focus-ring-style;
     }
 
     &:has(.input-group__control[aria-invalid='true']) {
-        border-color: $color-destructive;
-        box-shadow: 0 0 0 3px color-mix(in oklch, $color-destructive 20%, transparent);
+        @include invalid-ring-style;
     }
 
     &:has(:disabled) {
@@ -40,19 +38,19 @@
         height: auto;
     }
 
-    &:has(> .input-group__addon--inline-start) > input {
+    &:has(> .input-group__addon--inline-start) > .input-group__control {
         padding-left: 6px;
     }
 
-    &:has(> .input-group__addon--inline-end) > input {
+    &:has(> .input-group__addon--inline-end) > .input-group__control {
         padding-right: 6px;
     }
 
-    &:has(> .input-group__addon--block-start) > input {
+    &:has(> .input-group__addon--block-start) > .input-group__control {
         padding-bottom: 12px;
     }
 
-    &:has(> .input-group__addon--block-end) > input {
+    &:has(> .input-group__addon--block-end) > .input-group__control {
         padding-top: 12px;
     }
 
