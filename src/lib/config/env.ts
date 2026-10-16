@@ -14,7 +14,6 @@ export const getEnv = () => ({
     FIELD_ENCRYPTION_KEY: required('FIELD_ENCRYPTION_KEY'),
     FIELD_ENCRYPTION_KEY_ID: process.env.FIELD_ENCRYPTION_KEY_ID || 'v1',
     SESSION_SECRET: required('SESSION_SECRET'),
-    GUARD_PIN: required('GUARD_PIN'),
     SMTP_HOST: required('SMTP_HOST'),
     SMTP_PORT: Number(required('SMTP_PORT')),
     SMTP_USER: required('SMTP_USER'),
