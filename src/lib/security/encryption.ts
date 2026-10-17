@@ -1,6 +1,6 @@
 import 'server-only';
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { getEnv } from '@/lib/config/env';
+import { getEnv } from '@/lib/env';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_BYTES = 12;

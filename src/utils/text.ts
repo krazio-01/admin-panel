@@ -1,3 +1,19 @@
+const HTML_ESCAPES: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+};
+
+export function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (character) => HTML_ESCAPES[character]);
+}
+
+export function escapeRegex(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export function maskAadhaar(last4: string): string {
     return `XXXX XXXX ${last4}`;
 }
