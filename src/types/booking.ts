@@ -7,6 +7,7 @@ const stripPhonePrefix = (value: string) => stripSeparators(value).replace(/^(\+
 
 const trimmedText = z.string().trim();
 const trimmedLowercase = trimmedText.toLowerCase();
+const lowercaseText = z.string().toLowerCase();
 const tokenText = z.string().max(2048);
 const aadhaarDigits = z.string().transform(stripSeparators);
 const phoneDigits = z.string().transform(stripPhonePrefix);
@@ -28,7 +29,7 @@ const guestListSchema = z.array(guestInputSchema).min(1, 'Add at least one guest
 
 export const createBookingBodySchema = z
     .object({
-        studentId: z.string().regex(/^[a-f\d]{24}$/i, 'Select a student'),
+        studentId: lowercaseText.regex(/^[a-f\d]{24}$/, 'Select a student'),
         guests: guestListSchema.max(MAX_GUESTS_HARD_LIMIT),
         botToken: tokenText.optional(),
         emailVerificationToken: tokenText.min(20, 'Verify the email address of Guest 1'),
