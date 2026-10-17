@@ -1,6 +1,7 @@
 import 'server-only';
 import { jwtVerify, SignJWT } from 'jose';
-import { getEnv } from '@/lib/config/env';
+import { randomBytes } from 'node:crypto';
+import { getEnv } from '@/lib/env';
 
 export type SessionRole = 'admin' | 'checker';
 export type SessionPayload = { role: SessionRole; userId: string };
@@ -74,4 +75,14 @@ export function sessionCookieOptions(maxAgeSeconds: number): SessionCookieOption
         path: '/',
         maxAge: maxAgeSeconds,
     };
+}
+
+const TOKEN_PATTERN = /^[A-Za-z0-9_-]{22}$/;
+
+export function generateQrToken(): string {
+    return randomBytes(16).toString('base64url');
+}
+
+export function isWellFormedQrToken(value: string): boolean {
+    return TOKEN_PATTERN.test(value);
 }

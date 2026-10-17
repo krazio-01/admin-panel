@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getEnv } from '@/lib/config/env';
+import { getEnv } from '@/lib/env';
 
 const CONNECTION_OPTIONS = {
     maxPoolSize: 5,
