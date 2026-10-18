@@ -4,7 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { getEnv } from '@/lib/env';
 
 export type SessionRole = 'admin' | 'checker';
-export type SessionPayload = { role: SessionRole; userId: string };
+export type SessionPayload = { role: SessionRole; userId: string; sessionVersion: number };
 
 export type SessionCookieOptions = {
     httpOnly: boolean;
@@ -60,8 +60,13 @@ export async function verifySession(
         });
 
         if (typeof payload.userId !== 'string' || !payload.userId) return null;
+        if (!Number.isInteger(payload.sessionVersion)) return null;
 
-        return { role: expectedRole, userId: payload.userId };
+        return {
+            role: expectedRole,
+            userId: payload.userId,
+            sessionVersion: payload.sessionVersion as number,
+        };
     } catch {
         return null;
     }
@@ -85,4 +90,36 @@ export function generateQrToken(): string {
 
 export function isWellFormedQrToken(value: string): boolean {
     return TOKEN_PATTERN.test(value);
+}
+
+const EMAIL_PROOF_AUDIENCE = 'email-proof';
+export const EMAIL_PROOF_SECONDS = 60 * 60;
+
+export async function signEmailProof(email: string): Promise<string> {
+    const issuedAt = Math.floor(Date.now() / 1000);
+    const token = new SignJWT({
+        email: email.toLowerCase(),
+        iss: ISSUER,
+        aud: EMAIL_PROOF_AUDIENCE,
+        iat: issuedAt,
+        exp: issuedAt + EMAIL_PROOF_SECONDS,
+    });
+    token.setProtectedHeader({ alg: ALGORITHM });
+    return token.sign(getSigningKey());
+}
+
+export async function verifyEmailProof(token: string): Promise<string | null> {
+    const key = getSigningKey();
+
+    try {
+        const { payload } = await jwtVerify(token, key, {
+            algorithms: [ALGORITHM],
+            audience: EMAIL_PROOF_AUDIENCE,
+            issuer: ISSUER,
+        });
+
+        return typeof payload.email === 'string' ? payload.email : null;
+    } catch {
+        return null;
+    }
 }

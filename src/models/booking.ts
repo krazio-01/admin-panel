@@ -27,7 +27,7 @@ const bookingSchema = new Schema(
     {
         studentId: { type: Schema.Types.ObjectId, ref: 'Student', required: true, unique: true },
         studentName: { type: String, required: true },
-        studentClass: { type: String, required: true },
+        studentGroup: { type: String, required: true },
         idempotencyKey: { type: String, required: true, unique: true },
         qrToken: { type: String, required: true, unique: true },
         seats: { type: [String], required: true },

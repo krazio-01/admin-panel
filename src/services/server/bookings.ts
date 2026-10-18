@@ -84,7 +84,7 @@ async function bookInTransaction(
             {
                 studentId: student._id,
                 studentName: student.name,
-                studentClass: student.className,
+                studentGroup: student.group,
                 idempotencyKey: input.idempotencyKey,
                 qrToken: generateQrToken(),
                 email: { status: 'pending', attempts: 0 },
