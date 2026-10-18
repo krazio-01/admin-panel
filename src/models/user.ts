@@ -9,6 +9,7 @@ const userSchema = new Schema(
         passwordHash: { type: String, required: true },
         role: { type: String, enum: ['admin', 'checker'], required: true },
         active: { type: Boolean, default: true },
+        sessionVersion: { type: Number, default: 0 },
         lastLoginAt: Date,
     },
     { timestamps: true },
