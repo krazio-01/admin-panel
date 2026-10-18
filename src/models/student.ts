@@ -3,14 +3,14 @@ import { type InferSchemaType, type Model, model, models, Schema } from 'mongoos
 const studentSchema = new Schema(
     {
         name: { type: String, required: true, trim: true },
-        className: { type: String, required: true, trim: true },
-        rollNo: { type: String, required: true, trim: true },
+        group: { type: String, required: true, trim: true },
+        idNumber: { type: String, required: true, trim: true },
         hasBooked: { type: Boolean, default: false, index: true },
     },
     { timestamps: true },
 );
 
-studentSchema.index({ className: 1, rollNo: 1 }, { unique: true });
+studentSchema.index({ group: 1, idNumber: 1 }, { unique: true });
 
 export type StudentDocument = InferSchemaType<typeof studentSchema>;
 

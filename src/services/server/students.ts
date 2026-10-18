@@ -5,30 +5,26 @@ import { connectDb } from '@/lib/db';
 import { ValidationError } from '@/lib/errors';
 import { StudentModel, type StudentDocument } from '@/models';
 
-export type StudentOption = { id: string; name: string; className: string; rollNo: string };
+export type StudentOption = { id: string; name: string; group: string; idNumber: string };
 export type ImportResult = {
     inserted: number;
     skipped: number;
     errors: { line: number; reason: string }[];
 };
 
-type AvailableStudentRow = Pick<StudentDocument, 'name' | 'className' | 'rollNo'> & {
+type AvailableStudentRow = Pick<StudentDocument, 'name' | 'group' | 'idNumber'> & {
     _id: Types.ObjectId;
 };
 
 const MAX_IMPORT_ROWS = 5000;
 const MAX_REPORTED_ERRORS = 50;
 
-const HEADER_ALIASES: Record<string, 'name' | 'className' | 'rollNo'> = {
+const HEADER_ALIASES: Record<string, 'name' | 'group' | 'idNumber'> = {
     name: 'name',
     studentname: 'name',
-    class: 'className',
-    classname: 'className',
-    section: 'className',
-    classsection: 'className',
-    roll: 'rollNo',
-    rollno: 'rollNo',
-    rollnumber: 'rollNo',
+    group: 'group',
+    idnumber: 'idNumber',
+    id: 'idNumber',
 };
 
 function canonicalHeader(header: string): string {
@@ -38,15 +34,15 @@ function canonicalHeader(header: string): string {
 
 export async function listAvailableStudents(): Promise<StudentOption[]> {
     await connectDb();
-    const students = await StudentModel.find({ hasBooked: false }, 'name className rollNo', {
-        sort: { className: 1, name: 1 },
+    const students = await StudentModel.find({ hasBooked: false }, 'name group idNumber', {
+        sort: { group: 1, name: 1 },
         collation: { locale: 'en', numericOrdering: true },
     }).lean<AvailableStudentRow[]>();
     return students.map((student) => ({
         id: String(student._id),
         name: student.name,
-        className: student.className,
-        rollNo: student.rollNo,
+        group: student.group,
+        idNumber: student.idNumber,
     }));
 }
 
@@ -64,12 +60,12 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
             { path: 'csv', message: `Malformed quoting near line ${(quoteError.row ?? 0) + 1}` },
         ]);
     }
-    const missingColumns = (['name', 'className', 'rollNo'] as const).filter(
+    const missingColumns = (['name', 'group', 'idNumber'] as const).filter(
         (column) => !parsed.meta.fields?.includes(column),
     );
     if (missingColumns.length > 0) {
         throw new ValidationError([
-            { path: 'csv', message: 'The file needs the columns: name, class, roll no' },
+            { path: 'csv', message: 'The file needs the columns: name, group, id number' },
         ]);
     }
     if (parsed.data.length > MAX_IMPORT_ROWS) {
@@ -83,24 +79,24 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
     parsed.data.forEach((row, index) => {
         if (Object.values(row).every((value) => (value ?? '').trim() === '')) return;
         const name = row.name?.trim() ?? '';
-        const className = row.className?.trim() ?? '';
-        const rollNo = row.rollNo?.trim() ?? '';
+        const group = row.group?.trim() ?? '';
+        const idNumber = row.idNumber?.trim() ?? '';
         const invalid =
             !name ||
-            !className ||
-            !rollNo ||
+            !group ||
+            !idNumber ||
             name.length > 100 ||
-            className.length > 40 ||
-            rollNo.length > 40;
+            group.length > 40 ||
+            idNumber.length > 40;
         if (invalid) {
             if (errors.length < MAX_REPORTED_ERRORS) {
-                errors.push({ line: index + 2, reason: 'Name, class and roll no are required' });
+                errors.push({ line: index + 2, reason: 'Name, group and ID number are required' });
             }
             return;
         }
         operations.push({
             updateOne: {
-                filter: { className, rollNo },
+                filter: { group, idNumber },
                 update: { $setOnInsert: { name, hasBooked: false } },
                 upsert: true,
             },
