@@ -1,6 +1,14 @@
 import 'server-only';
+import { Types } from 'mongoose';
 import { connectDb } from '@/lib/db';
-import { type BookingDocument, BookingModel, type EmailStatus, StudentModel } from '@/models';
+import {
+    AuditLogModel,
+    type BookingDocument,
+    BookingModel,
+    type EmailStatus,
+    StudentModel,
+    UserModel,
+} from '@/models';
 import { escapeRegex, maskAadhaar } from '@/utils/text';
 import { type EmailDelivery, toEmailDelivery } from './emails';
 import { getEventSettings } from './settings';
@@ -39,6 +47,44 @@ export type DashboardStats = {
     studentsBooked: number;
 };
 
+export type BookingPage = {
+    items: BookingRow[];
+    total: number;
+    page: number;
+    pageSize: number;
+};
+
+export type SeatState = 'booked' | 'checkedIn';
+
+export type GateEvent = {
+    id: string;
+    kind: 'checkedIn' | 'alreadyCheckedIn';
+    studentName: string;
+    guestCount: number;
+    checkerName: string;
+    at: string;
+};
+
+export type DashboardSnapshot = {
+    event: {
+        eventName: string;
+        eventDate: string;
+        gatesOpenAt: string;
+        venue: string;
+        rows: number;
+        seatsPerRow: number;
+    };
+    stats: DashboardStats;
+    seats: Record<string, SeatState>;
+    gateEvents: GateEvent[];
+};
+
+type BookingSummaryDocument = { _id: unknown; studentName: string; seatCount: number };
+
+type CheckerNameDocument = { _id: unknown; name: string };
+
+const GATE_EVENT_LIMIT = 20;
+const CHECKER_ACTOR_PREFIX = 'checker:';
 const DEFAULT_PAGE_SIZE = 25;
 const MAX_PAGE_SIZE = 100;
 const MAX_PAGE = 10000;
@@ -65,7 +111,7 @@ function toRow(booking: BookingWithTimestamps): BookingRow {
     };
 }
 
-export async function listBookings(query: BookingListQuery) {
+export async function listBookings(query: BookingListQuery): Promise<BookingPage> {
     await connectDb();
 
     const rawPage = query.page ?? 1;
@@ -153,5 +199,97 @@ export async function getStats(): Promise<DashboardStats> {
         emailFailed,
         studentsTotal,
         studentsBooked,
+    };
+}
+
+async function listGateEvents(): Promise<GateEvent[]> {
+    const entries = await AuditLogModel.find(
+        { action: { $in: ['checkin.success', 'checkin.duplicate'] } },
+        null,
+        { sort: { at: -1, _id: -1 }, limit: GATE_EVENT_LIMIT, lean: true },
+    );
+
+    const bookingIds = entries.flatMap((entry) =>
+        entry.targetId && Types.ObjectId.isValid(entry.targetId) ? [entry.targetId] : [],
+    );
+
+    const checkerIdOf = (actor: string): string | undefined => {
+        const candidate = actor.slice(CHECKER_ACTOR_PREFIX.length);
+
+        return actor.startsWith(CHECKER_ACTOR_PREFIX) && Types.ObjectId.isValid(candidate)
+            ? candidate
+            : undefined;
+    };
+
+    const checkerIds = entries.flatMap((entry) => checkerIdOf(entry.actor) ?? []);
+
+    const [bookings, checkers] = await Promise.all([
+        BookingModel.find(
+            { _id: { $in: bookingIds } },
+            { studentName: 1, seatCount: 1 },
+            { lean: true },
+        ),
+        UserModel.find({ _id: { $in: checkerIds } }, { name: 1 }, { lean: true }),
+    ]);
+
+    const bookingsById = new Map(
+        (bookings as unknown as BookingSummaryDocument[]).map((booking) => [
+            String(booking._id),
+            booking,
+        ]),
+    );
+
+    const checkerNamesById = new Map(
+        (checkers as unknown as CheckerNameDocument[]).map((checker) => [
+            String(checker._id),
+            checker.name,
+        ]),
+    );
+
+    return entries.map((entry) => {
+        const booking = bookingsById.get(entry.targetId ?? '');
+        const checkerId = checkerIdOf(entry.actor);
+
+        return {
+            id: String(entry._id),
+            kind: entry.action === 'checkin.success' ? 'checkedIn' : 'alreadyCheckedIn',
+            studentName: booking?.studentName ?? 'Unknown student',
+            guestCount: booking?.seatCount ?? 0,
+            checkerName: (checkerId && checkerNamesById.get(checkerId)) || 'Unknown checker',
+            at: entry.at.toISOString(),
+        };
+    });
+}
+
+export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
+    await connectDb();
+
+    const [settings, stats, bookings, gateEvents] = await Promise.all([
+        getEventSettings(),
+        getStats(),
+        BookingModel.find({}, { seats: 1, status: 1 }, { lean: true }),
+        listGateEvents(),
+    ]);
+
+    const seats: Record<string, SeatState> = {};
+
+    for (const booking of bookings) {
+        for (const seat of booking.seats) {
+            seats[seat] = booking.status === 'checkedIn' ? 'checkedIn' : 'booked';
+        }
+    }
+
+    return {
+        event: {
+            eventName: settings.eventName,
+            eventDate: settings.eventDate.toISOString(),
+            gatesOpenAt: settings.gatesOpenAt.toISOString(),
+            venue: settings.venue,
+            rows: settings.rows,
+            seatsPerRow: settings.seatsPerRow,
+        },
+        stats,
+        seats,
+        gateEvents,
     };
 }
