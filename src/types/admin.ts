@@ -3,6 +3,7 @@ import { z } from 'zod';
 const trimmedText = z.string().trim();
 const trimmedLowercase = trimmedText.toLowerCase();
 const wholeNumber = z.number().int();
+const queryNumber = z.coerce.number().int();
 const passwordSchema = z.string().min(10, 'Use at least 10 characters').max(200);
 const personNameSchema = trimmedText.min(2, 'Enter the checker name').max(100);
 
@@ -32,14 +33,28 @@ export const updateCheckerSchema = z
 
 export const checkInSchema = z.object({ token: z.string().min(1).max(64) });
 
-export const updateSettingsSchema = z.object({
+const settingsFields = z.object({
     eventName: trimmedText.min(1).max(120),
     eventDate: z.coerce.date(),
+    gatesOpenAt: z.coerce.date(),
     venue: trimmedText.min(1).max(160),
     rows: wholeNumber.min(1).max(100),
     seatsPerRow: wholeNumber.min(1).max(60),
     maxGuestsPerBooking: wholeNumber.min(1).max(10),
     bookingsOpen: z.boolean(),
+});
+
+export const updateSettingsSchema = settingsFields.refine(
+    (settings) => settings.gatesOpenAt <= settings.eventDate,
+    { message: 'Gates must open on or before the event starts', path: ['gatesOpenAt'] },
+);
+
+export const bookingListQuerySchema = z.object({
+    search: trimmedText.max(100).optional(),
+    status: z.enum(['confirmed', 'checkedIn']).optional(),
+    emailStatus: z.enum(['pending', 'sent', 'failed']).optional(),
+    page: queryNumber.min(1).optional(),
+    pageSize: queryNumber.min(1).max(100).optional(),
 });
 
 export const importStudentsSchema = z.object({ csv: z.string().min(1).max(1_000_000) });

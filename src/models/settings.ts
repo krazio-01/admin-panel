@@ -7,6 +7,7 @@ const settingsSchema = new Schema(
         key: { type: String, required: true, unique: true, default: EVENT_SETTINGS_KEY },
         eventName: { type: String, required: true },
         eventDate: { type: Date, required: true },
+        gatesOpenAt: { type: Date, required: true },
         venue: { type: String, required: true },
         rows: { type: Number, required: true, min: 1 },
         seatsPerRow: { type: Number, required: true, min: 1 },

@@ -2,10 +2,12 @@ import type { z } from 'zod';
 import type { BookingConfirmation } from '@/services/server/bookings';
 import type { CheckerRow } from '@/services/server/checkers';
 import type { CheckInResult } from '@/services/server/checkin';
+import type { BookingPage, DashboardSnapshot } from '@/services/server/dashboard';
 import type { EmailDelivery } from '@/services/server/emails';
 import type { EventSettings } from '@/services/server/settings';
 import type { ImportResult, StudentOption } from '@/services/server/students';
 import type {
+    bookingListQuerySchema,
     createCheckerSchema,
     CreateSessionInput,
     updateCheckerSchema,
@@ -82,6 +84,19 @@ export const api = {
             }),
     },
     bookings: {
+        list: (query: Partial<z.output<typeof bookingListQuerySchema>>): Promise<BookingPage> => {
+            const params = new URLSearchParams();
+
+            for (const [key, value] of Object.entries(query)) {
+                if (value !== undefined && value !== '') params.set(key, String(value));
+            }
+
+            const queryString = params.toString();
+
+            return apiRequest<BookingPage>(
+                `${API_ROOT}/bookings${queryString ? `?${queryString}` : ''}`,
+            );
+        },
         create: (
             values: CreateBookingFormValues,
             idempotencyKey: string,
@@ -99,6 +114,10 @@ export const api = {
                 `${API_ROOT}/bookings/${encodeURIComponent(bookingId)}/confirmation-emails`,
                 { method: 'POST' },
             ),
+    },
+    dashboard: {
+        get: (): Promise<DashboardSnapshot> =>
+            apiRequest<DashboardSnapshot>(`${API_ROOT}/dashboard`),
     },
     aadhaar: {
         purge: (): Promise<{ bookingsUpdated: number }> =>

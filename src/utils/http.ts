@@ -17,9 +17,8 @@ export function assertSameOriginFetch(request: Request): void {
     if (request.headers.get('sec-fetch-site') !== 'same-origin') throw new ForbiddenOriginError();
 }
 
-export async function parseBody<T>(request: Request, schema: z.ZodType<T>): Promise<T> {
-    const body: unknown = await request.json().catch(() => undefined);
-    const result = schema.safeParse(body);
+function parseWithSchema<T>(input: unknown, schema: z.ZodType<T>): T {
+    const result = schema.safeParse(input);
     if (!result.success) {
         throw new ValidationError(
             result.error.issues.map((issue) => ({
@@ -30,6 +29,19 @@ export async function parseBody<T>(request: Request, schema: z.ZodType<T>): Prom
     }
 
     return result.data;
+}
+
+export async function parseBody<T>(request: Request, schema: z.ZodType<T>): Promise<T> {
+    const body: unknown = await request.json().catch(() => undefined);
+
+    return parseWithSchema(body, schema);
+}
+
+export function parseQuery<T>(request: Request, schema: z.ZodType<T>): T {
+    const { searchParams } = new URL(request.url);
+    const entries = [...searchParams.entries()].filter(([, value]) => value !== '');
+
+    return parseWithSchema(Object.fromEntries(entries), schema);
 }
 
 export function parseIdempotencyKey(headers: Headers): string {

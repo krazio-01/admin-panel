@@ -7,6 +7,7 @@ import type { UpdateSettingsInput } from '@/types/admin';
 export type EventSettings = {
     eventName: string;
     eventDate: Date;
+    gatesOpenAt: Date;
     venue: string;
     rows: number;
     seatsPerRow: number;
@@ -20,6 +21,7 @@ function toEventSettings(settings: SettingsDocument): EventSettings {
     return {
         eventName: settings.eventName,
         eventDate: settings.eventDate,
+        gatesOpenAt: settings.gatesOpenAt ?? settings.eventDate,
         venue: settings.venue,
         rows: settings.rows,
         seatsPerRow: settings.seatsPerRow,
