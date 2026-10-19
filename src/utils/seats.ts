@@ -7,6 +7,7 @@ export function rowLabel(rowIndex: number): string {
         label = String.fromCharCode('A'.charCodeAt(0) + (remaining % ALPHABET_LENGTH)) + label;
         remaining = Math.floor(remaining / ALPHABET_LENGTH) - 1;
     } while (remaining >= 0);
+
     return label;
 }
 

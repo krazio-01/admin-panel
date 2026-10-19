@@ -2,13 +2,13 @@
 
 import type { ComponentProps } from 'react';
 import './input-group.scss';
-
 import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input/input';
 import { Textarea } from '@/components/ui/textarea/textarea';
 import { classNames } from '@/utils/class-names';
 
 type InputGroupAddonAlign = 'inline-start' | 'inline-end' | 'block-start' | 'block-end';
+
 type InputGroupButtonSize = 'xs' | 'sm' | 'icon-xs' | 'icon-sm';
 
 function InputGroup({ className, ...props }: ComponentProps<'div'>) {
@@ -26,7 +26,9 @@ function InputGroupAddon({
             className={classNames('input-group__addon', `input-group__addon--${align}`, className)}
             onClick={(event) => {
                 onClick?.(event);
+
                 if ((event.target as HTMLElement).closest('button')) return;
+
                 event.currentTarget.parentElement
                     ?.querySelector<HTMLElement>('.input-group__control')
                     ?.focus();

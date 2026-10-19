@@ -25,6 +25,7 @@ export function formatAadhaar(digits: string): string {
 export function maskEmail(email: string): string {
     const separatorIndex = email.lastIndexOf('@');
     if (separatorIndex < 1) return '*'.repeat(Math.max(email.length, 1));
+
     const localPart = email.slice(0, separatorIndex);
     const domain = email.slice(separatorIndex + 1);
     return `${localPart[0]}${'*'.repeat(Math.max(localPart.length - 1, 1))}@${domain}`;

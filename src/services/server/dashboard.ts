@@ -67,6 +67,7 @@ function toRow(booking: BookingWithTimestamps): BookingRow {
 
 export async function listBookings(query: BookingListQuery) {
     await connectDb();
+
     const rawPage = query.page ?? 1;
     const requestedPage = Number.isFinite(rawPage) ? Math.floor(rawPage) : 1;
     const page = Math.min(MAX_PAGE, Math.max(1, requestedPage));
@@ -78,6 +79,7 @@ export async function listBookings(query: BookingListQuery) {
     const filter: Record<string, unknown> = {};
     if (query.status) filter.status = query.status;
     if (query.emailStatus) filter['email.status'] = query.emailStatus;
+
     const search = query.search?.trim();
     if (search) {
         const pattern = new RegExp(escapeRegex(search), 'i');
@@ -98,6 +100,7 @@ export async function listBookings(query: BookingListQuery) {
         }),
         BookingModel.countDocuments(filter),
     ]);
+
     return {
         items: (bookings as unknown as BookingWithTimestamps[]).map(toRow),
         total,
@@ -108,6 +111,7 @@ export async function listBookings(query: BookingListQuery) {
 
 export async function getStats(): Promise<DashboardStats> {
     await connectDb();
+
     const [
         settings,
         bookings,
@@ -137,6 +141,7 @@ export async function getStats(): Promise<DashboardStats> {
             },
         ]),
     ]);
+
     return {
         totalSeats: settings.totalSeats,
         seatsRemaining: settings.totalSeats - settings.nextSeatIndex,

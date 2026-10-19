@@ -38,8 +38,11 @@ export function createMemoryRateLimiter(): RateLimiter {
                 windows.set(key, { count: 1, resetAt: now + rule.windowSeconds * 1000 });
                 return { allowed: true, retryAfterSeconds: 0 };
             }
+
             current.count += 1;
+
             if (current.count <= rule.max) return { allowed: true, retryAfterSeconds: 0 };
+
             return { allowed: false, retryAfterSeconds: Math.ceil((current.resetAt - now) / 1000) };
         },
     };
@@ -58,8 +61,10 @@ export function createUpstashRateLimiter(url: string, token: string): RateLimite
                     limiter: Ratelimit.slidingWindow(rule.max, `${rule.windowSeconds} s`),
                     prefix: `rl:${ruleId}`,
                 });
+
                 limiters.set(ruleId, limiter);
             }
+
             const result = await limiter.limit(key);
             return {
                 allowed: result.success,
@@ -77,6 +82,7 @@ export function getRateLimiter(): RateLimiter {
         env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
             ? createUpstashRateLimiter(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN)
             : createMemoryRateLimiter();
+
     return rateLimiter;
 }
 

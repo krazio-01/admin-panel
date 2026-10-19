@@ -44,6 +44,7 @@ export const createBookingBodySchema = z
                     message: 'This Aadhaar number is already used for another guest',
                 });
             }
+
             seenAadhaar.add(guest.aadhaar);
         });
     });
@@ -60,7 +61,9 @@ export const confirmEmailVerificationSchema = z.object({
 });
 
 export type CreateBookingBody = z.output<typeof createBookingBodySchema>;
+
 export type CreateBookingInput = Omit<CreateBookingBody, 'botToken' | 'emailVerificationToken'> & {
     idempotencyKey: string;
 };
+
 export type CreateBookingFormValues = z.input<typeof createBookingBodySchema>;

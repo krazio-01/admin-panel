@@ -11,6 +11,8 @@ export const loginSchema = z.object({
     password: z.string().min(1, 'Enter your password').max(200),
 });
 
+export const createSessionSchema = loginSchema.extend({ role: z.enum(['admin', 'checker']) });
+
 export const createCheckerSchema = z.object({
     name: personNameSchema,
     username: trimmedLowercase.regex(
@@ -42,7 +44,10 @@ export const updateSettingsSchema = z.object({
 
 export const importStudentsSchema = z.object({ csv: z.string().min(1).max(1_000_000) });
 
-export type LoginInput = z.output<typeof loginSchema>;
+export type CreateSessionInput = z.output<typeof createSessionSchema>;
+
 export type CreateCheckerInput = z.output<typeof createCheckerSchema>;
+
 export type UpdateCheckerInput = z.output<typeof updateCheckerSchema>;
+
 export type UpdateSettingsInput = z.output<typeof updateSettingsSchema>;

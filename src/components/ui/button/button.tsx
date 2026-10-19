@@ -3,6 +3,7 @@ import './button.scss';
 import { classNames, type WithStringClassName } from '@/utils/class-names';
 
 type ButtonVariant = 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'link';
+
 type ButtonSize = 'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg';
 
 function Button({

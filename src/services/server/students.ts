@@ -6,6 +6,7 @@ import { ValidationError } from '@/lib/errors';
 import { StudentModel, type StudentDocument } from '@/models';
 
 export type StudentOption = { id: string; name: string; group: string; idNumber: string };
+
 export type ImportResult = {
     inserted: number;
     skipped: number;
@@ -34,10 +35,12 @@ function canonicalHeader(header: string): string {
 
 export async function listAvailableStudents(): Promise<StudentOption[]> {
     await connectDb();
+
     const students = await StudentModel.find({ hasBooked: false }, 'name group idNumber', {
         sort: { group: 1, name: 1 },
         collation: { locale: 'en', numericOrdering: true },
     }).lean<AvailableStudentRow[]>();
+
     return students.map((student) => ({
         id: String(student._id),
         name: student.name,
@@ -48,6 +51,7 @@ export async function listAvailableStudents(): Promise<StudentOption[]> {
 
 export async function importStudentsCsv(csvText: string): Promise<ImportResult> {
     await connectDb();
+
     const parsed = Papa.parse<Record<string, string | undefined>>(csvText.replace(/^﻿/, ''), {
         header: true,
         skipEmptyLines: false,
@@ -60,6 +64,7 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
             { path: 'csv', message: `Malformed quoting near line ${(quoteError.row ?? 0) + 1}` },
         ]);
     }
+
     const missingColumns = (['name', 'group', 'idNumber'] as const).filter(
         (column) => !parsed.meta.fields?.includes(column),
     );
@@ -68,6 +73,7 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
             { path: 'csv', message: 'The file needs the columns: name, group, id number' },
         ]);
     }
+
     if (parsed.data.length > MAX_IMPORT_ROWS) {
         throw new ValidationError([
             { path: 'csv', message: `Import at most ${MAX_IMPORT_ROWS} rows at a time` },
@@ -78,6 +84,7 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
     const operations: Parameters<typeof StudentModel.bulkWrite>[0] = [];
     parsed.data.forEach((row, index) => {
         if (Object.values(row).every((value) => (value ?? '').trim() === '')) return;
+
         const name = row.name?.trim() ?? '';
         const group = row.group?.trim() ?? '';
         const idNumber = row.idNumber?.trim() ?? '';
@@ -88,12 +95,15 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
             name.length > 100 ||
             group.length > 40 ||
             idNumber.length > 40;
+
         if (invalid) {
             if (errors.length < MAX_REPORTED_ERRORS) {
                 errors.push({ line: index + 2, reason: 'Name, group and ID number are required' });
             }
+
             return;
         }
+
         operations.push({
             updateOne: {
                 filter: { group, idNumber },
@@ -106,5 +116,6 @@ export async function importStudentsCsv(csvText: string): Promise<ImportResult> 
     const inserted = operations.length
         ? (await StudentModel.bulkWrite(operations, { ordered: false })).upsertedCount
         : 0;
+
     return { inserted, skipped: operations.length - inserted, errors };
 }

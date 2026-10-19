@@ -15,6 +15,7 @@ export function getEmailSender(): EmailSender {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
     });
+
     return emailSender;
 }
 
@@ -23,5 +24,6 @@ export function getBotCheck(): BotCheck {
     botCheck ??= TURNSTILE_SECRET_KEY
         ? createTurnstileBotCheck(TURNSTILE_SECRET_KEY)
         : createNoopBotCheck();
+
     return botCheck;
 }

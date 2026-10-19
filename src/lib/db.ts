@@ -11,6 +11,7 @@ const globalForMongoose = globalThis as { mongooseConnection?: Promise<typeof mo
 
 export async function connectDb(uri = getEnv().MONGODB_URI): Promise<typeof mongoose> {
     globalForMongoose.mongooseConnection ??= mongoose.connect(uri, CONNECTION_OPTIONS);
+
     try {
         return await globalForMongoose.mongooseConnection;
     } catch (error) {

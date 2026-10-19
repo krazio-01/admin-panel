@@ -23,11 +23,13 @@ const DAY_MS = 24 * 60 * 60_000;
 
 export async function countEmailsSentInLastDay(now: Date): Promise<number> {
     await connectDb();
+
     const since = new Date(now.getTime() - DAY_MS);
     const [confirmations, verificationCodes] = await Promise.all([
         BookingModel.countDocuments({ 'email.sentAt': { $gte: since } }),
         EmailVerificationModel.countDocuments({ createdAt: { $gte: since } }),
     ]);
+
     return confirmations + verificationCodes;
 }
 
@@ -86,6 +88,7 @@ async function attemptDelivery(
     const bookingId = String(booking._id);
 
     let update: Record<string, unknown>;
+
     try {
         const dailyLimit = options.dailyLimit ?? getEnv().EMAIL_DAILY_LIMIT;
         if ((await countEmailsSentInLastDay(now)) >= dailyLimit) {
@@ -103,6 +106,7 @@ async function attemptDelivery(
                 seats: booking.seats,
                 qrContentId: QR_CONTENT_ID,
             });
+
             await sender.send({
                 to: booking.guests[0].email,
                 subject,
@@ -116,6 +120,7 @@ async function attemptDelivery(
                     },
                 ],
             });
+
             update = {
                 $set: { 'email.status': 'sent', 'email.sentAt': now },
                 $unset: { 'email.lastError': '' },
@@ -126,6 +131,7 @@ async function attemptDelivery(
             { bookingId, errorName: error instanceof Error ? error.name : 'unknown' },
             'confirmation email failed',
         );
+
         update = {
             $set: { 'email.status': 'failed', 'email.lastError': describeSendFailure(error) },
         };
@@ -136,6 +142,7 @@ async function attemptDelivery(
         lean: true,
     });
     if (!recorded) throw new NotFoundError('Booking not found');
+
     return toEmailDelivery(recorded.email);
 }
 
@@ -146,6 +153,7 @@ export async function sendConfirmationEmail(
 ): Promise<void> {
     try {
         await connectDb();
+
         const claimed = await BookingModel.findOneAndUpdate(
             { _id: bookingId, 'email.status': 'pending', 'email.attempts': 0 },
             { $inc: { 'email.attempts': 1 } },
@@ -166,12 +174,15 @@ export async function resendConfirmationEmail(
     options: SendOptions = {},
 ): Promise<EmailDelivery> {
     if (!mongoose.isValidObjectId(bookingId)) throw new NotFoundError('Booking not found');
+
     await connectDb();
+
     const claimed = await BookingModel.findOneAndUpdate(
         { _id: bookingId },
         { $inc: { 'email.attempts': 1 } },
         { returnDocument: 'after', lean: true },
     );
     if (!claimed) throw new NotFoundError('Booking not found');
+
     return attemptDelivery(claimed, sender, options);
 }

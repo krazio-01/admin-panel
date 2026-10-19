@@ -21,6 +21,7 @@ export function renderConfirmationEmail(data: ConfirmationEmailData): {
     html: string;
 } {
     const eventName = escapeHtml(data.eventName);
+
     const guestRows = data.guestNames
         .map(
             (name, index) =>
@@ -62,5 +63,6 @@ export function renderVerificationEmail(data: { code: string; validMinutes: numb
 <p style="margin:0 0 16px;font-size:32px;letter-spacing:6px;"><strong>${escapeHtml(data.code)}</strong></p>
 <p style="margin:0;color:#5f6368;font-size:13px;">It is valid for ${data.validMinutes} minutes. If you did not request it, you can ignore this email.</p>
 </td></tr></table></td></tr></table></body></html>`;
+
     return { subject: 'Your email verification code', html };
 }

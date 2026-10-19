@@ -12,6 +12,7 @@ export function createTurnstileBotCheck(secret: string): BotCheck {
     return {
         async verify(token, ip) {
             if (!token) return false;
+
             const response = await fetch(VERIFY_URL, {
                 method: 'POST',
                 body: new URLSearchParams({ secret, response: token, remoteip: ip }),

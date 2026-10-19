@@ -43,7 +43,9 @@ export async function checkInByToken(
     ip?: string,
 ): Promise<CheckInResult> {
     if (!isWellFormedQrToken(token)) return { outcome: 'invalid' };
+
     await connectDb();
+
     const actor = `checker:${checker.id}`;
 
     const checkedIn = await BookingModel.findOneAndUpdate(
@@ -58,6 +60,7 @@ export async function checkInByToken(
         },
         { returnDocument: 'after', lean: true },
     );
+
     if (checkedIn) {
         await writeAudit({ actor, action: 'checkin.success', targetId: String(checkedIn._id), ip });
         return { outcome: 'checked_in', ...summarize(checkedIn) };
@@ -65,7 +68,9 @@ export async function checkInByToken(
 
     const existing = await BookingModel.findOne({ qrToken: token }, null, { lean: true });
     if (!existing) return { outcome: 'invalid' };
+
     await writeAudit({ actor, action: 'checkin.duplicate', targetId: String(existing._id), ip });
+
     return {
         outcome: 'already_checked_in',
         checkedInAt: existing.checkedInAt?.toISOString() ?? '',
