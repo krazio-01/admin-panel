@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { getEnv } from '@/lib/env';
 
 export type SessionRole = 'admin' | 'checker';
+
 export type SessionPayload = { role: SessionRole; userId: string; sessionVersion: number };
 
 export type SessionCookieOptions = {
@@ -18,6 +19,7 @@ export const ADMIN_COOKIE = 'admin_session';
 export const CHECKER_COOKIE = 'checker_session';
 export const ADMIN_SESSION_SECONDS = 8 * 60 * 60;
 export const CHECKER_SESSION_SECONDS = 12 * 60 * 60;
+export const SESSION_COOKIE_BY_ROLE = { admin: ADMIN_COOKIE, checker: CHECKER_COOKIE } as const;
 
 const ISSUER = 'event-booking';
 const ALGORITHM = 'HS256';
@@ -28,6 +30,7 @@ function getSigningKey(): Uint8Array {
     if (key.byteLength < MIN_SECRET_BYTES) {
         throw new Error(`SESSION_SECRET must be at least ${MIN_SECRET_BYTES} bytes`);
     }
+
     return key;
 }
 
@@ -41,6 +44,7 @@ export async function signSession(payload: SessionPayload, ttlSeconds: number): 
         exp: issuedAt + ttlSeconds,
     });
     token.setProtectedHeader({ alg: ALGORITHM });
+
     return token.sign(getSigningKey());
 }
 
@@ -105,6 +109,7 @@ export async function signEmailProof(email: string): Promise<string> {
         exp: issuedAt + EMAIL_PROOF_SECONDS,
     });
     token.setProtectedHeader({ alg: ALGORITHM });
+
     return token.sign(getSigningKey());
 }
 
