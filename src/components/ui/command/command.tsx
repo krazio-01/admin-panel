@@ -4,7 +4,6 @@ import type { ComponentProps, ReactNode } from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { CheckIcon, SearchIcon } from 'lucide-react';
 import './command.scss';
-
 import {
     Dialog,
     DialogContent,

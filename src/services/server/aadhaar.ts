@@ -14,10 +14,12 @@ export async function purgeAadhaar(
 ): Promise<{ bookingsUpdated: number }> {
     await connectDb();
     await writeAudit({ actor, action: 'admin.purge_aadhaar', ip });
+
     const result = await BookingModel.updateMany(
         {},
         { $set: { 'guests.$[].aadhaarEncrypted': null, 'guests.$[].aadhaarLast4': null } },
     );
+
     return { bookingsUpdated: result.modifiedCount };
 }
 
@@ -27,11 +29,14 @@ export async function revealAadhaar(
     ip?: string,
 ): Promise<RevealedGuest[]> {
     if (!mongoose.isValidObjectId(bookingId)) throw new NotFoundError('Booking not found');
+
     await connectDb();
+
     const booking = await BookingModel.findById(bookingId, null, { lean: true });
     if (!booking) throw new NotFoundError('Booking not found');
 
     await writeAudit({ actor, action: 'admin.reveal_aadhaar', targetId: bookingId, ip });
+
     return booking.guests.map((guest) => ({
         name: guest.name,
         aadhaar: guest.aadhaarEncrypted ? decryptField(guest.aadhaarEncrypted) : null,

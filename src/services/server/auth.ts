@@ -27,8 +27,11 @@ async function authenticate(
     ip?: string,
 ): Promise<string> {
     await connectDb();
+
     const user = await UserModel.findOne({ username }, null, { lean: true });
+
     dummyHash ??= hashPassword('placeholder-for-unknown-accounts');
+
     const hashToVerify = user?.passwordHash ?? (await dummyHash);
     const passwordMatches = await verifyPassword(hashToVerify, password);
     if (!user || !passwordMatches || user.role !== role || !user.active) {
@@ -37,6 +40,7 @@ async function authenticate(
 
     await UserModel.updateOne({ _id: user._id }, { $set: { lastLoginAt: new Date() } });
     await writeAudit({ actor: `${role}:${user._id}`, action: `${role}.login`, ip });
+
     const ttlSeconds = role === 'admin' ? ADMIN_SESSION_SECONDS : CHECKER_SESSION_SECONDS;
     const sessionVersion = user.sessionVersion ?? 0;
     return signSession({ role, userId: String(user._id), sessionVersion }, ttlSeconds);
@@ -56,14 +60,18 @@ export async function resolveActiveSession(
 ): Promise<{ userId: string; name: string } | null> {
     const session = await verifySession(token, role);
     if (!session || !mongoose.isValidObjectId(session.userId)) return null;
+
     await connectDb();
+
     const user = await UserModel.findById(session.userId, null, { lean: true });
     if (!user || !user.active || user.role !== role) return null;
     if ((user.sessionVersion ?? 0) !== session.sessionVersion) return null;
+
     return { userId: String(user._id), name: user.name };
 }
 
 export type AdminSession = { role: 'admin'; userId: string; name: string };
+
 export type CheckerSession = { role: 'checker'; userId: string; name: string };
 
 export async function getAdminSession(): Promise<AdminSession | null> {
@@ -83,12 +91,14 @@ export async function getCheckerSession(): Promise<CheckerSession | null> {
 export async function requireAdminSession() {
     const session = await getAdminSession();
     if (!session) throw new UnauthorizedError();
+
     return session;
 }
 
 export async function requireAdminPage() {
     const session = await getAdminSession();
     if (!session) redirect('/admin/login');
+
     return session;
 }
 
@@ -99,7 +109,9 @@ export async function requireAdminMutation(request: Request) {
 
 export async function requireCheckerMutation(request: Request) {
     assertSameOrigin(request, getEnv().APP_URL);
+
     const session = await getCheckerSession();
     if (!session) throw new UnauthorizedError();
+
     return session;
 }

@@ -34,6 +34,7 @@ function toConfirmation(
     requestedStudentId: string,
 ): BookingConfirmation {
     if (String(booking.studentId) !== requestedStudentId) throw new IdempotencyKeyConflictError();
+
     return {
         bookingId: String(booking._id),
         seats: booking.seats,
@@ -54,6 +55,7 @@ async function bookInTransaction(
     const settings = await SettingsModel.findOne({ key: EVENT_SETTINGS_KEY }, null, { session });
     if (!settings) throw new NotFoundError('Event settings are not configured');
     if (!settings.bookingsOpen) throw new BookingsClosedError();
+
     if (input.guests.length > settings.maxGuestsPerBooking) {
         throw new TooManyGuestsError(settings.maxGuestsPerBooking);
     }
@@ -65,6 +67,7 @@ async function bookInTransaction(
         settings.rows * settings.seatsPerRow,
     );
     if (!allocation) throw new NotEnoughSeatsError();
+
     await SettingsModel.updateOne(
         { key: EVENT_SETTINGS_KEY },
         { $set: { nextSeatIndex: allocation.nextSeatIndex } },
@@ -102,11 +105,13 @@ async function bookInTransaction(
         ],
         { session },
     );
+
     return toConfirmation(booking, input.studentId);
 }
 
 export async function createBooking(input: CreateBookingInput): Promise<BookingConfirmation> {
     await connectDb();
+
     try {
         return await mongoose.connection.transaction((session) =>
             bookInTransaction(input, session),
@@ -118,12 +123,14 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingC
         ) {
             throw error;
         }
+
         const existing = await BookingModel.findOne(
             { idempotencyKey: input.idempotencyKey },
             null,
             { lean: true },
         );
         if (existing) return toConfirmation(existing, input.studentId);
+
         throw new StudentAlreadyBookedError();
     }
 }

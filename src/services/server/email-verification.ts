@@ -26,6 +26,7 @@ const CODE_DIGITS = 6;
 function hashCode(verificationId: string, code: string): string {
     const hmac = createHmac('sha256', getEnv().SESSION_SECRET);
     hmac.update(`${verificationId}:${code}`);
+
     return hmac.digest('hex');
 }
 
@@ -35,6 +36,7 @@ export async function startEmailVerification(
     options: { now?: Date; dailyLimit?: number } = {},
 ): Promise<{ verificationId: string; expiresInSeconds: number }> {
     await connectDb();
+
     const now = options.now ?? new Date();
     const dailyLimit = options.dailyLimit ?? getEnv().EMAIL_DAILY_LIMIT;
     if ((await remainingEmailCapacity(now, dailyLimit)) < EMAILS_PER_BOOKING)
@@ -64,9 +66,12 @@ export async function startEmailVerification(
             },
             'verification email failed',
         );
+
         await EmailVerificationModel.deleteOne({ _id: verificationId });
+
         throw new EmailDeliveryFailedError();
     }
+
     return { verificationId: String(verificationId), expiresInSeconds: OTP_VALID_SECONDS };
 }
 
@@ -76,7 +81,9 @@ export async function confirmEmailVerification(
     options: { now?: Date } = {},
 ): Promise<{ verificationToken: string; expiresInSeconds: number }> {
     if (!mongoose.isValidObjectId(verificationId)) throw new VerificationExpiredError();
+
     await connectDb();
+
     const now = options.now ?? new Date();
 
     const attempt = await EmailVerificationModel.findOneAndUpdate(
@@ -89,12 +96,14 @@ export async function confirmEmailVerification(
         { $inc: { attempts: 1 } },
         { returnDocument: 'after', lean: true },
     );
+
     if (!attempt) {
         const existing = await EmailVerificationModel.findById(verificationId, null, {
             lean: true,
         });
         if (existing?.verifiedAt) throw new VerificationExpiredError();
         if (existing && existing.expiresAt > now) throw new VerificationLockedError();
+
         throw new VerificationExpiredError();
     }
 
@@ -109,6 +118,7 @@ export async function confirmEmailVerification(
         { $set: { verifiedAt: now } },
     );
     if (consumed.modifiedCount !== 1) throw new VerificationExpiredError();
+
     return {
         verificationToken: await signEmailProof(attempt.email),
         expiresInSeconds: EMAIL_PROOF_SECONDS,

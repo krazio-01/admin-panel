@@ -15,6 +15,7 @@ function loadKey(): { key: Buffer; keyId: string } {
             `FIELD_ENCRYPTION_KEY must decode to ${KEY_BYTES} bytes, got ${key.length}`,
         );
     }
+
     return { key, keyId: FIELD_ENCRYPTION_KEY_ID };
 }
 
@@ -35,16 +36,22 @@ export function decryptField(payload: string): string {
     const { key, keyId: currentKeyId } = loadKey();
     const parts = payload.split(':');
     if (parts.length !== 4) throw new Error('Malformed encrypted payload');
+
     const [keyId, ivEncoded, authTagEncoded, ciphertextEncoded] = parts;
     if (keyId !== currentKeyId) throw new Error('Unknown encryption key id');
+
     const iv = Buffer.from(ivEncoded, 'base64');
     const authTag = Buffer.from(authTagEncoded, 'base64');
+
     if (iv.length !== IV_BYTES) throw new Error('Malformed encrypted payload: invalid IV length');
+
     if (authTag.length !== AUTH_TAG_BYTES) {
         throw new Error('Malformed encrypted payload: invalid auth tag length');
     }
+
     const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_BYTES });
     decipher.setAuthTag(authTag);
+
     return Buffer.concat([
         decipher.update(Buffer.from(ciphertextEncoded, 'base64')),
         decipher.final(),

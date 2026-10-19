@@ -32,18 +32,22 @@ function toEventSettings(settings: SettingsDocument): EventSettings {
 
 export async function getEventSettings(): Promise<EventSettings> {
     await connectDb();
+
     const settings = await SettingsModel.findOne({ key: EVENT_SETTINGS_KEY }).lean();
     if (!settings) throw new NotFoundError('Event settings are not configured');
+
     return toEventSettings(settings);
 }
 
 export async function updateEventSettings(input: UpdateSettingsInput): Promise<EventSettings> {
     await connectDb();
+
     if (input.maxGuestsPerBooking > input.seatsPerRow) {
         throw new SettingsConflictError(
             'The guest limit cannot be larger than the number of seats in a row.',
         );
     }
+
     const updated = await SettingsModel.findOneAndUpdate(
         {
             key: EVENT_SETTINGS_KEY,
@@ -54,7 +58,9 @@ export async function updateEventSettings(input: UpdateSettingsInput): Promise<E
         { returnDocument: 'after' },
     ).lean();
     if (updated) return toEventSettings(updated);
+
     await getEventSettings();
+
     throw new SettingsConflictError(
         'Seats per row cannot change once seats are allocated, and the theater cannot shrink below the seats already allocated.',
     );

@@ -4,7 +4,6 @@ import type { ComponentProps } from 'react';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { XIcon } from 'lucide-react';
 import './dialog.scss';
-
 import { Button } from '@/components/ui/button/button';
 import { classNames, type WithStringClassName } from '@/utils/class-names';
 
