@@ -3,6 +3,7 @@ import { escapeHtml } from '@/utils/text';
 export type ConfirmationEmailData = {
     eventName: string;
     eventDate: Date;
+    gatesOpenAt: Date;
     venue: string;
     studentName: string;
     guestNames: string[];
@@ -40,6 +41,7 @@ export function renderConfirmationEmail(data: ConfirmationEmailData): {
 <p style="font-size:18px;margin:0 0 8px;"><strong>Registration successful</strong></p>
 <p style="margin:0 0 16px;color:#5f6368;">Booking for ${escapeHtml(data.studentName)}</p>
 <p style="margin:0 0 4px;"><strong>When:</strong> ${escapeHtml(dateFormatter.format(data.eventDate))}</p>
+<p style="margin:0 0 4px;"><strong>Gates open:</strong> ${escapeHtml(dateFormatter.format(data.gatesOpenAt))}</p>
 <p style="margin:0 0 16px;"><strong>Where:</strong> ${escapeHtml(data.venue)}</p>
 <p style="margin:0 0 4px;"><strong>Guests and seats</strong></p>
 <ul style="margin:0 0 20px;padding-left:20px;">${guestRows}</ul>

@@ -100,6 +100,7 @@ async function attemptDelivery(
             const { subject, html } = renderConfirmationEmail({
                 eventName: settings.eventName,
                 eventDate: settings.eventDate,
+                gatesOpenAt: settings.gatesOpenAt,
                 venue: settings.venue,
                 studentName: booking.studentName,
                 guestNames: booking.guests.map((guest) => guest.name),
