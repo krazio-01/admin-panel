@@ -16,10 +16,17 @@ html {
 }
 
 body {
+    min-height: 100vh;
     background: $color-background;
     color: $color-foreground;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+    letter-spacing: -0.02em;
 }
 
 img,
@@ -36,4 +43,42 @@ select,
 textarea {
     font: inherit;
     color: inherit;
+}
+
+code,
+kbd,
+samp {
+    font-family: $font-mono;
+}
+
+::selection {
+    background: $color-primary;
+    color: $color-primary-foreground;
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        rotate: 360deg;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

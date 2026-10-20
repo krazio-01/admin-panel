@@ -1,30 +1,64 @@
-$color-foreground: oklch(0.145 0 0);
-$color-muted-foreground: oklch(0.556 0 0);
-$color-surface: #ffffff;
-$color-background: #f6f5f1;
-$color-brand: #7a1f2b;
-$color-brand-contrast: #ffffff;
-$color-success: #1e7a46;
-$color-warning: #a35b00;
-$color-destructive: oklch(0.577 0.245 27.325);
-$color-border: #e2dfd6;
-$color-popover: oklch(1 0 0);
-$color-primary: oklch(0.205 0 0);
-$color-primary-foreground: oklch(0.985 0 0);
-$color-subtle: oklch(0.97 0 0);
-$color-input: oklch(0.922 0 0);
-$color-ring: oklch(0.708 0 0);
-$radius: 12px;
-$radius-sm: 6px;
-$radius-md: 8px;
-$radius-lg: 10px;
-$radius-xl: 14px;
+$color-background: #ffffff;
+$color-foreground: #09090b;
+$color-muted: #f4f4f5;
+$color-muted-foreground: #71717a;
+$color-faint-foreground: #a1a1aa;
+$color-border: #e4e4e7;
+$color-border-strong: #d4d4d8;
+$color-primary: #18181b;
+$color-primary-foreground: #fafafa;
+$color-ring: #18181b;
+$color-row-hover: #fafafa;
+
+$color-surface: $color-background;
+$color-popover: $color-background;
+$color-subtle: $color-muted;
+$color-input: $color-border;
+
+$color-success: #16a34a;
+$color-warning: #d97706;
+$color-destructive: #dc2626;
+
+$color-success-text: #15803d;
+$color-success-surface: #f0fdf4;
+$color-success-border: #bbf7d0;
+$color-warning-text: #b45309;
+$color-warning-surface: #fffbeb;
+$color-warning-border: #fde68a;
+$color-destructive-text: #b91c1c;
+$color-destructive-surface: #fef2f2;
+$color-destructive-border: #fecaca;
+
+$radius: 0.625rem;
+$radius-sm: calc(#{$radius} - 4px);
+$radius-md: calc(#{$radius} - 2px);
+$radius-lg: $radius;
+$radius-xl: calc(#{$radius} + 4px);
 $radius-pill: 9999px;
+
 $space-1: 4px;
 $space-2: 8px;
 $space-3: 12px;
 $space-4: 16px;
 $space-6: 24px;
 $space-8: 32px;
+
 $breakpoint-md: 720px;
+
 $font-sans: var(--font-geist-sans), system-ui, sans-serif;
+$font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+$ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+$duration-fast: 150ms;
+$duration-base: 250ms;
+$duration-slow: 400ms;
+
+$shadow-xs: 0 1px 2px rgb(0 0 0 / 0.04);
+$shadow-raised:
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 24px 64px rgb(0 0 0 / 0.08);
+$shadow-popover:
+    0 4px 6px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px -2px rgb(0 0 0 / 0.06);
+$shadow-focus: 0 0 0 3px rgb(24 24 27 / 0.12);
+$shadow-invalid: 0 0 0 3px rgb(220 38 38 / 0.15);

@@ -3,12 +3,18 @@
 @mixin card {
     background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: $radius;
+    border-radius: $radius-xl;
     padding: $space-6;
 }
 
 @mixin from-md {
     @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
         @content;
     }
 }
@@ -29,18 +35,18 @@
     border-top: 1px solid $color-border;
     border-bottom-left-radius: $radius-xl;
     border-bottom-right-radius: $radius-xl;
-    background: color-mix(in oklch, $color-subtle 50%, transparent);
+    background: color-mix(in srgb, $color-muted 50%, transparent);
 }
 
 @mixin focus-ring-style {
     border-color: $color-ring;
-    box-shadow: 0 0 0 3px color-mix(in oklch, $color-ring 50%, transparent);
+    box-shadow: $shadow-focus;
     outline: none;
 }
 
 @mixin invalid-ring-style {
     border-color: $color-destructive;
-    box-shadow: 0 0 0 3px color-mix(in oklch, $color-destructive 20%, transparent);
+    box-shadow: $shadow-invalid;
 }
 
 @mixin focus-ring {
@@ -59,33 +65,39 @@
     width: 100%;
     min-width: 0;
     border: 1px solid $color-input;
-    border-radius: $radius-lg;
-    background: transparent;
+    border-radius: $radius-md;
+    background: $color-background;
+    color: $color-foreground;
     font-size: 0.875rem;
-    padding: 4px 10px;
+    padding: 0 14px;
+    outline: none;
     transition:
-        border-color 0.15s,
-        box-shadow 0.15s;
+        border-color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
 
     &::placeholder {
-        color: $color-muted-foreground;
+        color: $color-faint-foreground;
     }
 
     &:disabled {
         pointer-events: none;
         cursor: not-allowed;
         opacity: 0.5;
-        background: color-mix(in oklch, $color-input 50%, transparent);
+        background: $color-muted;
     }
 
-    @include focus-ring;
+    &:focus-visible,
+    &:focus {
+        @include focus-ring-style;
+    }
+
     @include invalid-ring;
 }
 
 @mixin popup {
     background: $color-popover;
     color: $color-foreground;
-    box-shadow: 0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+    border: 1px solid $color-border;
     font-size: 0.875rem;
     outline: none;
 }
@@ -94,12 +106,27 @@
     opacity: 1;
     scale: 1;
     transition:
-        opacity 0.1s,
-        scale 0.1s;
+        opacity $duration-fast $ease-out,
+        scale $duration-fast $ease-out;
 
     &[data-starting-style],
     &[data-ending-style] {
         opacity: 0;
-        scale: 0.95;
+        scale: 0.96;
+    }
+}
+
+@mixin shimmer {
+    background: linear-gradient(
+        90deg,
+        $color-muted 0%,
+        color-mix(in srgb, $color-muted, $color-background 70%) 50%,
+        $color-muted 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+
+    @include reduced-motion {
+        animation: none;
     }
 }
