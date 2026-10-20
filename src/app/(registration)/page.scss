@@ -1,0 +1,42 @@
+@use 'tokens' as *;
+
+.design-preview {
+    display: grid;
+    gap: 24px;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 48px 16px;
+    position: relative;
+    z-index: 1;
+
+    &__auditorium {
+        height: 320px;
+        overflow: hidden;
+        border: 1px solid $color-border;
+        border-radius: $radius-xl;
+    }
+
+    &__title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        letter-spacing: -0.045em;
+        line-height: 1;
+    }
+
+    &__stack {
+        display: grid;
+        gap: 20px;
+    }
+
+    &__form {
+        display: grid;
+        gap: 12px;
+    }
+
+    &__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+}
