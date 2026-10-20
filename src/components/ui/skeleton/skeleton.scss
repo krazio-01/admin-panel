@@ -1,0 +1,9 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.skeleton {
+    width: 100%;
+    height: 16px;
+    border-radius: $radius-sm;
+    @include shimmer;
+}
