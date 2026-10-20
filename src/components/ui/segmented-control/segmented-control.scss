@@ -1,0 +1,49 @@
+@use 'tokens' as *;
+
+.segmented-control {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: $radius-md;
+    background: $color-muted;
+
+    &__option {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 26px;
+        padding: 0 10px;
+        border: 0;
+        border-radius: $radius-sm;
+        background: transparent;
+        color: $color-muted-foreground;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: pointer;
+        outline: none;
+        transition: color $duration-fast $ease-out;
+
+        &:hover,
+        &--selected {
+            color: $color-foreground;
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 2px $color-ring;
+        }
+    }
+
+    &__highlight {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: $color-background;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+    }
+
+    &__label {
+        position: relative;
+    }
+}

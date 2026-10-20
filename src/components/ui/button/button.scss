@@ -2,36 +2,45 @@
 @use 'mixins' as *;
 
 .button {
+    position: relative;
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    height: 32px;
-    padding: 0 10px;
+    gap: 8px;
+    height: 42px;
+    padding: 0 16px;
     border: 1px solid transparent;
-    border-radius: $radius-lg;
+    border-radius: $radius-md;
     background-clip: padding-box;
     font-size: 0.875rem;
     font-weight: 500;
     white-space: nowrap;
+    text-decoration: none;
     cursor: pointer;
     user-select: none;
     transition:
-        background-color 0.15s,
-        border-color 0.15s,
-        box-shadow 0.15s;
+        background-color $duration-fast $ease-out,
+        border-color $duration-fast $ease-out,
+        color $duration-fast $ease-out,
+        opacity $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out,
+        scale 100ms $ease-out;
 
     @include focus-ring;
     @include invalid-ring;
 
-    &:active:not([aria-haspopup]) {
-        transform: translateY(1px);
+    &:active:not([aria-haspopup], :disabled) {
+        scale: 0.98;
     }
 
     &:disabled {
         pointer-events: none;
         opacity: 0.5;
+    }
+
+    &--loading:disabled {
+        opacity: 0.8;
     }
 
     svg {
@@ -41,64 +50,92 @@
         pointer-events: none;
     }
 
+    &__label {
+        display: inline-flex;
+        align-items: center;
+        gap: inherit;
+        visibility: hidden;
+    }
+
+    &__spinner {
+        position: absolute;
+        inset: 0;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: $radius-pill;
+        animation: spin 0.7s linear infinite;
+    }
+
     &--default {
         background: $color-primary;
         color: $color-primary-foreground;
 
         &:hover {
-            background: color-mix(in oklch, $color-primary 80%, transparent);
+            background: color-mix(in srgb, $color-primary 90%, $color-background);
         }
     }
 
     &--outline {
         border-color: $color-border;
-        background: $color-surface;
+        background: $color-background;
+        color: $color-foreground;
 
         &:hover,
         &[aria-expanded='true'] {
-            background: $color-subtle;
+            background: $color-muted;
         }
     }
 
     &--secondary {
-        background: $color-subtle;
-        color: $color-primary;
+        background: $color-muted;
+        color: $color-foreground;
 
         &:hover {
-            background: color-mix(in oklch, $color-subtle, $color-foreground 5%);
+            background: color-mix(in srgb, $color-muted, $color-foreground 5%);
         }
     }
 
     &--ghost {
+        background: transparent;
+        color: $color-foreground;
+
         &:hover,
         &[aria-expanded='true'] {
-            background: $color-subtle;
+            background: $color-muted;
         }
     }
 
     &--destructive {
-        background: color-mix(in oklch, $color-destructive 10%, transparent);
-        color: $color-destructive;
+        background: $color-destructive;
+        color: $color-primary-foreground;
 
         &:hover {
-            background: color-mix(in oklch, $color-destructive 20%, transparent);
+            background: color-mix(in srgb, $color-destructive 90%, $color-foreground);
         }
     }
 
     &--link {
-        color: $color-primary;
-        text-underline-offset: 4px;
+        height: auto;
+        padding: 0;
+        background: transparent;
+        color: $color-foreground;
+        text-decoration: underline;
+        text-decoration-color: $color-border-strong;
+        text-underline-offset: 3px;
 
         &:hover {
-            text-decoration: underline;
+            text-decoration-color: currentColor;
         }
     }
 
     &--xs {
-        height: 24px;
+        height: 26px;
         gap: 4px;
         padding: 0 8px;
-        border-radius: $radius-md;
+        border-radius: $radius-sm;
         font-size: 0.75rem;
 
         svg {
@@ -108,11 +145,10 @@
     }
 
     &--sm {
-        height: 28px;
-        gap: 4px;
-        padding: 0 10px;
-        border-radius: $radius-md;
-        font-size: 0.8rem;
+        height: 32px;
+        gap: 6px;
+        padding: 0 12px;
+        font-size: 0.8125rem;
 
         svg {
             width: 14px;
@@ -121,19 +157,20 @@
     }
 
     &--lg {
-        height: 36px;
+        height: 46px;
+        padding: 0 20px;
     }
 
     &--icon {
-        width: 32px;
+        width: 42px;
         padding: 0;
     }
 
     &--icon-xs {
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         padding: 0;
-        border-radius: $radius-md;
+        border-radius: $radius-sm;
 
         svg {
             width: 12px;
@@ -142,15 +179,14 @@
     }
 
     &--icon-sm {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         padding: 0;
-        border-radius: $radius-md;
     }
 
     &--icon-lg {
-        width: 36px;
-        height: 36px;
+        width: 46px;
+        height: 46px;
         padding: 0;
     }
 }

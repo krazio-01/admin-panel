@@ -1,0 +1,11 @@
+.radar-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+
+    &__drawing {
+        width: 100%;
+        height: 100%;
+    }
+}

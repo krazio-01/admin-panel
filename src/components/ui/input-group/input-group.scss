@@ -7,15 +7,16 @@
     align-items: center;
     width: 100%;
     min-width: 0;
-    height: 32px;
+    height: 42px;
     border: 1px solid $color-input;
-    border-radius: $radius-lg;
+    border-radius: $radius-md;
+    background: $color-background;
     outline: none;
     transition:
-        border-color 0.15s,
-        box-shadow 0.15s;
+        border-color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
 
-    &:has(.input-group__control:focus-visible) {
+    &:has(.input-group__control:focus) {
         @include focus-ring-style;
     }
 
@@ -25,7 +26,7 @@
 
     &:has(:disabled) {
         opacity: 0.5;
-        background: color-mix(in oklch, $color-input 50%, transparent);
+        background: $color-muted;
     }
 
     &:has(> .input-group__addon--block-start),
@@ -72,13 +73,9 @@
             height: 16px;
         }
 
-        > kbd {
-            border-radius: calc(#{$radius-lg} - 5px);
-        }
-
         &--inline-start {
             order: -1;
-            padding-left: 8px;
+            padding-left: 12px;
 
             &:has(> button) {
                 margin-left: -0.3rem;
@@ -91,7 +88,7 @@
 
         &--inline-end {
             order: 1;
-            padding-right: 8px;
+            padding-right: 12px;
 
             &:has(> button) {
                 margin-right: -0.3rem;
@@ -142,6 +139,11 @@
         border-radius: 0;
         background: transparent;
         box-shadow: none;
+
+        &:focus,
+        &:focus-visible {
+            box-shadow: none;
+        }
     }
 
     .textarea.input-group__control {

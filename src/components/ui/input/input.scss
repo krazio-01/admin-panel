@@ -3,11 +3,11 @@
 
 .input {
     @include field;
-    height: 32px;
+    height: 42px;
 
     &::file-selector-button {
         display: inline-flex;
-        height: 24px;
+        height: 28px;
         margin-right: 8px;
         padding: 0;
         border: 0;

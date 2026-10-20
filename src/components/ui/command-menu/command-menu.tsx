@@ -1,9 +1,8 @@
 'use client';
-
 import type { ComponentProps, ReactNode } from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { CheckIcon, SearchIcon } from 'lucide-react';
-import './command.scss';
+import './command-menu.scss';
 import {
     Dialog,
     DialogContent,
@@ -15,7 +14,7 @@ import { InputGroup, InputGroupAddon } from '@/components/ui/input-group/input-g
 import { classNames } from '@/utils/class-names';
 
 function Command({ className, ...props }: ComponentProps<typeof CommandPrimitive>) {
-    return <CommandPrimitive className={classNames('command', className)} {...props} />;
+    return <CommandPrimitive className={classNames('command-menu', className)} {...props} />;
 }
 
 function CommandDialog({
@@ -35,10 +34,10 @@ function CommandDialog({
     return (
         <Dialog {...props}>
             <DialogContent
-                className={classNames('command__dialog', className)}
+                className={classNames('command-menu__dialog', className)}
                 showCloseButton={showCloseButton}
             >
-                <DialogHeader className="command__sr-only">
+                <DialogHeader className="command-menu__sr-only">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
@@ -50,14 +49,14 @@ function CommandDialog({
 
 function CommandInput({ className, ...props }: ComponentProps<typeof CommandPrimitive.Input>) {
     return (
-        <div className="command__input-wrapper">
+        <div className="command-menu__input-wrapper">
             <InputGroup>
                 <CommandPrimitive.Input
-                    className={classNames('input-group__control', 'command__input', className)}
+                    className={classNames('input-group__control', 'command-menu__input', className)}
                     {...props}
                 />
                 <InputGroupAddon>
-                    <SearchIcon className="command__search-icon" />
+                    <SearchIcon className="command-menu__search-icon" />
                 </InputGroupAddon>
             </InputGroup>
         </div>
@@ -65,18 +64,26 @@ function CommandInput({ className, ...props }: ComponentProps<typeof CommandPrim
 }
 
 function CommandList({ className, ...props }: ComponentProps<typeof CommandPrimitive.List>) {
-    return <CommandPrimitive.List className={classNames('command__list', className)} {...props} />;
+    return (
+        <CommandPrimitive.List className={classNames('command-menu__list', className)} {...props} />
+    );
 }
 
 function CommandEmpty({ className, ...props }: ComponentProps<typeof CommandPrimitive.Empty>) {
     return (
-        <CommandPrimitive.Empty className={classNames('command__empty', className)} {...props} />
+        <CommandPrimitive.Empty
+            className={classNames('command-menu__empty', className)}
+            {...props}
+        />
     );
 }
 
 function CommandGroup({ className, ...props }: ComponentProps<typeof CommandPrimitive.Group>) {
     return (
-        <CommandPrimitive.Group className={classNames('command__group', className)} {...props} />
+        <CommandPrimitive.Group
+            className={classNames('command-menu__group', className)}
+            {...props}
+        />
     );
 }
 
@@ -86,7 +93,7 @@ function CommandSeparator({
 }: ComponentProps<typeof CommandPrimitive.Separator>) {
     return (
         <CommandPrimitive.Separator
-            className={classNames('command__separator', className)}
+            className={classNames('command-menu__separator', className)}
             {...props}
         />
     );
@@ -98,15 +105,15 @@ function CommandItem({
     ...props
 }: ComponentProps<typeof CommandPrimitive.Item>) {
     return (
-        <CommandPrimitive.Item className={classNames('command__item', className)} {...props}>
+        <CommandPrimitive.Item className={classNames('command-menu__item', className)} {...props}>
             {children}
-            <CheckIcon className="command__check" />
+            <CheckIcon className="command-menu__check" />
         </CommandPrimitive.Item>
     );
 }
 
 function CommandShortcut({ className, ...props }: ComponentProps<'span'>) {
-    return <span className={classNames('command__shortcut', className)} {...props} />;
+    return <span className={classNames('command-menu__shortcut', className)} {...props} />;
 }
 
 export {

@@ -1,5 +1,4 @@
 'use client';
-
 import type { ComponentProps } from 'react';
 import './input-group.scss';
 import { Button } from '@/components/ui/button/button';

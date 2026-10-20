@@ -2,20 +2,25 @@
 @use 'mixins' as *;
 
 .card {
-    --card-spacing: 16px;
+    --card-spacing: 24px;
     display: flex;
     flex-direction: column;
     gap: var(--card-spacing);
     padding: var(--card-spacing) 0;
+    border: 1px solid $color-border;
     border-radius: $radius-xl;
     overflow: hidden;
     background: $color-surface;
     color: $color-foreground;
     font-size: 0.875rem;
-    box-shadow: 0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+    box-shadow: $shadow-xs;
 
     &--sm {
-        --card-spacing: 12px;
+        --card-spacing: 16px;
+    }
+
+    &--raised {
+        box-shadow: $shadow-raised;
     }
 
     &:has(.card__footer) {
@@ -40,10 +45,8 @@
         display: grid;
         align-items: start;
         grid-auto-rows: min-content;
-        gap: 4px;
+        gap: 6px;
         padding: 0 var(--card-spacing);
-        border-top-left-radius: $radius-xl;
-        border-top-right-radius: $radius-xl;
 
         &:has(.card__action) {
             grid-template-columns: 1fr auto;
@@ -55,18 +58,20 @@
     }
 
     &__title {
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.25;
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
     }
 
     &--sm &__title {
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
     }
 
     &__description {
         color: $color-muted-foreground;
         font-size: 0.875rem;
+        line-height: 1.5;
     }
 
     &__action {

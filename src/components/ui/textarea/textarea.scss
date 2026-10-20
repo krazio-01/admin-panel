@@ -3,7 +3,8 @@
 .textarea {
     @include field;
     display: flex;
-    min-height: 64px;
-    padding: 8px 10px;
+    min-height: 84px;
+    padding: 10px 14px;
+    line-height: 1.5;
     field-sizing: content;
 }

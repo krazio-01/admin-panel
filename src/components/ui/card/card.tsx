@@ -5,10 +5,19 @@ import { classNames } from '@/utils/class-names';
 function Card({
     className,
     size = 'default',
+    raised = false,
     ...props
-}: ComponentProps<'div'> & { size?: 'default' | 'sm' }) {
+}: ComponentProps<'div'> & { size?: 'default' | 'sm'; raised?: boolean }) {
     return (
-        <div className={classNames('card', size === 'sm' && 'card--sm', className)} {...props} />
+        <div
+            className={classNames(
+                'card',
+                size === 'sm' && 'card--sm',
+                raised && 'card--raised',
+                className,
+            )}
+            {...props}
+        />
     );
 }
 
