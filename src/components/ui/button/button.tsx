@@ -10,16 +10,37 @@ function Button({
     className,
     variant = 'default',
     size = 'default',
+    loading = false,
+    disabled,
+    children,
     ...props
 }: WithStringClassName<ButtonPrimitive.Props> & {
     variant?: ButtonVariant;
     size?: ButtonSize;
+    loading?: boolean;
 }) {
     return (
         <ButtonPrimitive
-            className={classNames('button', `button--${variant}`, `button--${size}`, className)}
+            className={classNames(
+                'button',
+                `button--${variant}`,
+                `button--${size}`,
+                loading && 'button--loading',
+                className,
+            )}
+            disabled={disabled || loading}
+            aria-busy={loading || undefined}
             {...props}
-        />
+        >
+            {loading ? (
+                <>
+                    <span className="button__label">{children}</span>
+                    <span className="button__spinner" aria-hidden="true" />
+                </>
+            ) : (
+                children
+            )}
+        </ButtonPrimitive>
     );
 }
 
