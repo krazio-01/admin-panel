@@ -16,13 +16,17 @@
         border-bottom: 1px solid $color-border;
     }
 
+    &__header &__row:hover {
+        background: transparent;
+    }
+
     &__body tr:last-child {
         border-bottom: 0;
     }
 
     &__footer {
         border-top: 1px solid $color-border;
-        background: color-mix(in oklch, $color-subtle 50%, transparent);
+        background: color-mix(in srgb, $color-muted 50%, transparent);
         font-weight: 500;
 
         > tr:last-child {
@@ -32,30 +36,31 @@
 
     &__row {
         border-bottom: 1px solid $color-border;
-        transition: background-color 0.15s;
+        transition: background-color $duration-fast $ease-out;
 
         &:hover,
         &:has([aria-expanded='true']) {
-            background: color-mix(in oklch, $color-subtle 50%, transparent);
+            background: $color-row-hover;
         }
 
         &[data-state='selected'] {
-            background: $color-subtle;
+            background: $color-muted;
         }
     }
 
     &__head {
-        height: 40px;
-        padding: 0 8px;
+        height: 44px;
+        padding: 0 20px;
         text-align: left;
         vertical-align: middle;
+        color: $color-muted-foreground;
+        font-size: 0.8125rem;
         font-weight: 500;
         white-space: nowrap;
-        color: $color-foreground;
     }
 
     &__cell {
-        padding: 8px;
+        padding: 13px 20px;
         vertical-align: middle;
         white-space: nowrap;
     }

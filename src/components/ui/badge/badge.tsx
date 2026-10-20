@@ -3,7 +3,17 @@ import { useRender } from '@base-ui/react/use-render';
 import './badge.scss';
 import { classNames } from '@/utils/class-names';
 
-type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
+type BadgeVariant =
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'success'
+    | 'pending'
+    | 'failed'
+    | 'solid';
 
 function Badge({
     className,

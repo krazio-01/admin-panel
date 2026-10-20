@@ -6,20 +6,23 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     width: fit-content;
-    height: 20px;
-    padding: 2px 8px;
+    height: 22px;
+    padding: 0 8px;
     border: 1px solid transparent;
-    border-radius: $radius-pill;
+    border-radius: $radius-sm;
     overflow: hidden;
     font-size: 0.75rem;
     font-weight: 500;
+    line-height: 1;
     white-space: nowrap;
+    text-decoration: none;
     transition:
-        background-color 0.15s,
-        border-color 0.15s,
-        box-shadow 0.15s;
+        background-color $duration-fast $ease-out,
+        border-color $duration-fast $ease-out,
+        color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
 
     @include focus-ring;
 
@@ -30,53 +33,86 @@
     }
 
     &--default {
+        border-color: $color-primary;
         background: $color-primary;
         color: $color-primary-foreground;
     }
 
+    &--solid {
+        border-color: $color-foreground;
+        background: $color-foreground;
+        color: $color-background;
+    }
+
     &--secondary {
-        background: $color-subtle;
-        color: $color-primary;
+        background: $color-muted;
+        color: $color-foreground;
     }
 
     &--destructive {
-        background: color-mix(in oklch, $color-destructive 10%, transparent);
-        color: $color-destructive;
+        border-color: $color-destructive-border;
+        background: $color-destructive-surface;
+        color: $color-destructive-text;
     }
 
     &--outline {
         border-color: $color-border;
-        color: $color-foreground;
+        color: $color-muted-foreground;
     }
 
     &--ghost:hover {
-        background: $color-subtle;
+        background: $color-muted;
         color: $color-muted-foreground;
     }
 
     &--link {
-        color: $color-primary;
-        text-underline-offset: 4px;
+        color: $color-foreground;
+        text-underline-offset: 3px;
 
         &:hover {
             text-decoration: underline;
         }
     }
 
-    &--default:is(a):hover {
-        background: color-mix(in oklch, $color-primary 80%, transparent);
+    &--success,
+    &--pending,
+    &--failed {
+        &::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            border-radius: $radius-pill;
+            background: currentColor;
+        }
     }
 
-    &--secondary:is(a):hover {
-        background: color-mix(in oklch, $color-subtle 80%, transparent);
+    &--success {
+        border-color: $color-success-border;
+        background: $color-success-surface;
+        color: $color-success-text;
     }
 
-    &--destructive:is(a):hover {
-        background: color-mix(in oklch, $color-destructive 20%, transparent);
+    &--pending {
+        border-color: $color-warning-border;
+        background: $color-warning-surface;
+        color: $color-warning-text;
     }
 
+    &--failed {
+        border-color: $color-destructive-border;
+        background: $color-destructive-surface;
+        color: $color-destructive-text;
+    }
+
+    &--default:is(a):hover,
+    &--solid:is(a):hover {
+        background: color-mix(in srgb, $color-primary 90%, $color-background);
+    }
+
+    &--secondary:is(a):hover,
     &--outline:is(a):hover {
-        background: $color-subtle;
-        color: $color-muted-foreground;
+        background: $color-muted;
+        color: $color-foreground;
     }
 }
