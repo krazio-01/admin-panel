@@ -13,13 +13,10 @@
         display: flex;
         width: 288px;
         flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+        gap: 12px;
+        padding: 16px;
         border-radius: $radius-lg;
-        box-shadow:
-            0 4px 6px -1px rgb(0 0 0 / 0.1),
-            0 2px 4px -2px rgb(0 0 0 / 0.1),
-            0 0 0 1px color-mix(in oklch, $color-foreground 10%, transparent);
+        box-shadow: $shadow-popover;
         transform-origin: var(--transform-origin);
 
         &--anchored {
@@ -35,7 +32,7 @@
     }
 
     &__title {
-        font-weight: 500;
+        font-weight: 600;
     }
 
     &__description {
