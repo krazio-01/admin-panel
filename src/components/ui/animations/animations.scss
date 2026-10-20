@@ -1,0 +1,37 @@
+@use 'mixins' as *;
+
+.count-up {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    [data-count-pending] {
+        opacity: 0;
+    }
+}
+
+.animated-height {
+    overflow: hidden;
+}
+
+.split-reveal {
+    display: inline;
+
+    &__text {
+        @include visually-hidden;
+    }
+
+    &__letter {
+        display: inline-block;
+        white-space: pre;
+    }
+}
+
+@include reduced-motion {
+    .reveal,
+    .split-reveal__letter {
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+    }
+}
