@@ -34,12 +34,21 @@ type RequestOptions = {
     acceptedStatuses?: number[];
 };
 
-export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const hasBody = options.json !== undefined;
-    const response = await fetch(path, {
+    const request = fetch(path, {
         method: options.method ?? (hasBody ? 'POST' : 'GET'),
         headers: { ...(hasBody && { 'Content-Type': 'application/json' }), ...options.headers },
         body: hasBody ? JSON.stringify(options.json) : undefined,
+    });
+
+    const response = await request.catch((networkError: unknown) => {
+        throw new ApiError(
+            0,
+            'network_error',
+            'Check your connection and try again.',
+            networkError,
+        );
     });
 
     if (!response.ok && !options.acceptedStatuses?.includes(response.status)) {
