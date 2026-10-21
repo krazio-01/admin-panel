@@ -1,3 +1,4 @@
+import { formatDate } from '@/utils/dates';
 import { escapeHtml } from '@/utils/text';
 
 export type ConfirmationEmailData = {
@@ -10,12 +11,6 @@ export type ConfirmationEmailData = {
     seats: string[];
     qrContentId: string;
 };
-
-const dateFormatter = new Intl.DateTimeFormat('en-IN', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-    timeZone: 'Asia/Kolkata',
-});
 
 export function renderConfirmationEmail(data: ConfirmationEmailData): {
     subject: string;
@@ -40,8 +35,8 @@ export function renderConfirmationEmail(data: ConfirmationEmailData): {
 <tr><td style="padding:24px;">
 <p style="font-size:18px;margin:0 0 8px;"><strong>Registration successful</strong></p>
 <p style="margin:0 0 16px;color:#5f6368;">Booking for ${escapeHtml(data.studentName)}</p>
-<p style="margin:0 0 4px;"><strong>When:</strong> ${escapeHtml(dateFormatter.format(data.eventDate))}</p>
-<p style="margin:0 0 4px;"><strong>Gates open:</strong> ${escapeHtml(dateFormatter.format(data.gatesOpenAt))}</p>
+<p style="margin:0 0 4px;"><strong>When:</strong> ${escapeHtml(formatDate(data.eventDate, 'fullDateTime'))}</p>
+<p style="margin:0 0 4px;"><strong>Gates open:</strong> ${escapeHtml(formatDate(data.gatesOpenAt, 'fullDateTime'))}</p>
 <p style="margin:0 0 16px;"><strong>Where:</strong> ${escapeHtml(data.venue)}</p>
 <p style="margin:0 0 4px;"><strong>Guests and seats</strong></p>
 <ul style="margin:0 0 20px;padding-left:20px;">${guestRows}</ul>
