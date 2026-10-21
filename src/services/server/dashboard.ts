@@ -9,7 +9,8 @@ import {
     StudentModel,
     UserModel,
 } from '@/models';
-import { escapeRegex, maskAadhaar } from '@/utils/text';
+import { AADHAAR_GROUP_SIZE, AADHAAR_LENGTH } from '@/types/booking';
+import { escapeRegex, groupCharacters, maskStart } from '@/utils/text';
 import { type EmailDelivery, toEmailDelivery } from './emails';
 import { getEventSettings } from './settings';
 
@@ -106,7 +107,9 @@ function toRow(booking: BookingWithTimestamps): BookingRow {
             name: guest.name,
             phone: guest.phone,
             email: guest.email,
-            aadhaarMasked: guest.aadhaarLast4 ? maskAadhaar(guest.aadhaarLast4) : null,
+            aadhaarMasked: guest.aadhaarLast4
+                ? groupCharacters(maskStart(guest.aadhaarLast4, AADHAAR_LENGTH), AADHAAR_GROUP_SIZE)
+                : null,
         })),
     };
 }
