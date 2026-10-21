@@ -1,4 +1,5 @@
 @use 'tokens' as *;
+@use 'mixins' as *;
 
 *,
 *::before,
@@ -51,9 +52,13 @@ samp {
     font-family: $font-mono;
 }
 
+.visually-hidden {
+    @include visually-hidden;
+}
+
 ::selection {
-    background: $color-primary;
-    color: $color-primary-foreground;
+    background: color-mix(in srgb, $color-primary 14%, transparent);
+    color: $color-foreground;
 }
 
 @keyframes shimmer {

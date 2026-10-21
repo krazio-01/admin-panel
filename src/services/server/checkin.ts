@@ -2,7 +2,8 @@ import 'server-only';
 import { connectDb } from '@/lib/db';
 import { isWellFormedQrToken } from '@/lib/security/tokens';
 import { type BookingDocument, BookingModel } from '@/models';
-import { maskAadhaar } from '@/utils/text';
+import { AADHAAR_GROUP_SIZE, AADHAAR_LENGTH } from '@/types/booking';
+import { groupCharacters, maskStart } from '@/utils/text';
 import { writeAudit } from './audit';
 
 export type CheckInGuest = { name: string; aadhaarMasked: string | null };
@@ -32,7 +33,9 @@ function summarize(booking: BookingDocument): BookingSummary {
         seats: booking.seats,
         guests: booking.guests.map((guest) => ({
             name: guest.name,
-            aadhaarMasked: guest.aadhaarLast4 ? maskAadhaar(guest.aadhaarLast4) : null,
+            aadhaarMasked: guest.aadhaarLast4
+                ? groupCharacters(maskStart(guest.aadhaarLast4, AADHAAR_LENGTH), AADHAAR_GROUP_SIZE)
+                : null,
         })),
     };
 }

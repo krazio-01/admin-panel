@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { ForbiddenOriginError, ValidationError } from '@/lib/errors';
 import { idempotencyKeySchema } from '@/types/booking';
 
@@ -17,8 +17,8 @@ export function assertSameOriginFetch(request: Request): void {
     if (request.headers.get('sec-fetch-site') !== 'same-origin') throw new ForbiddenOriginError();
 }
 
-function parseWithSchema<T>(input: unknown, schema: z.ZodType<T>): T {
-    const result = schema.safeParse(input);
+function parseWithSchema<T>(input: unknown, schema: z.core.$ZodType<T>): T {
+    const result = z.safeParse(schema, input);
     if (!result.success) {
         throw new ValidationError(
             result.error.issues.map((issue) => ({
@@ -31,13 +31,13 @@ function parseWithSchema<T>(input: unknown, schema: z.ZodType<T>): T {
     return result.data;
 }
 
-export async function parseBody<T>(request: Request, schema: z.ZodType<T>): Promise<T> {
+export async function parseBody<T>(request: Request, schema: z.core.$ZodType<T>): Promise<T> {
     const body: unknown = await request.json().catch(() => undefined);
 
     return parseWithSchema(body, schema);
 }
 
-export function parseQuery<T>(request: Request, schema: z.ZodType<T>): T {
+export function parseQuery<T>(request: Request, schema: z.core.$ZodType<T>): T {
     const { searchParams } = new URL(request.url);
     const entries = [...searchParams.entries()].filter(([, value]) => value !== '');
 
