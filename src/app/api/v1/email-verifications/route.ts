@@ -1,7 +1,7 @@
 import { BotCheckFailedError, withDomainErrors } from '@/lib/errors';
 import { getBotCheck, getEmailSender } from '@/providers';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
-import { startEmailVerification } from '@/services/server/email-verification';
+import { startEmailVerification } from '@/services/server/emailVerification';
 import { startEmailVerificationSchema } from '@/types/booking';
 import { parseBody } from '@/utils/http';
 

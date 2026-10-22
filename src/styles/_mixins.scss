@@ -1,15 +1,19 @@
 @use 'tokens' as *;
 
-@mixin card {
-    background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: $radius-xl;
-    padding: $space-6;
-}
+@mixin frosted-glass {
+    border-color: rgb(228 228 231 / 0.85);
+    background: rgb(255 255 255 / 0.75);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
 
-@mixin from-md {
-    @media (min-width: $breakpoint-md) {
-        @content;
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        background: #ffffff;
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+        background: #ffffff;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
 }
 
@@ -64,7 +68,7 @@
 @mixin field {
     width: 100%;
     min-width: 0;
-    border: 1px solid $color-input;
+    border: 1px solid $color-border;
     border-radius: $radius-md;
     background: $color-background;
     color: $color-foreground;
