@@ -1,0 +1,12 @@
+@use 'tokens' as *;
+
+.field-error-live-region {
+    display: contents;
+
+    .field-error {
+        overflow: hidden;
+        color: $color-destructive-text;
+        font-size: 0.8125rem;
+        line-height: 1.4;
+    }
+}
