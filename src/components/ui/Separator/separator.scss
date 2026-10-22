@@ -1,0 +1,16 @@
+@use 'tokens' as *;
+
+.separator {
+    flex-shrink: 0;
+    background: $color-border;
+
+    &[data-orientation='horizontal'] {
+        width: 100%;
+        height: 1px;
+    }
+
+    &[data-orientation='vertical'] {
+        width: 1px;
+        align-self: stretch;
+    }
+}

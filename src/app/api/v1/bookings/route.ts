@@ -5,7 +5,7 @@ import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
 import { requireAdminSession } from '@/services/server/auth';
 import { createBooking } from '@/services/server/bookings';
 import { listBookings } from '@/services/server/dashboard';
-import { assertEmailProof } from '@/services/server/email-verification';
+import { assertEmailProof } from '@/services/server/emailVerification';
 import { sendConfirmationEmail } from '@/services/server/emails';
 import { bookingListQuerySchema } from '@/types/admin';
 import { createBookingBodySchema } from '@/types/booking';

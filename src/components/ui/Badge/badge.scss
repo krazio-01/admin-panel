@@ -1,0 +1,118 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.badge {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: fit-content;
+    height: 22px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: $radius-sm;
+    overflow: hidden;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+        background-color $duration-fast $ease-out,
+        border-color $duration-fast $ease-out,
+        color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
+
+    svg {
+        width: 12px;
+        height: 12px;
+        pointer-events: none;
+    }
+
+    &[data-variant='default'] {
+        border-color: $color-primary;
+        background: $color-primary;
+        color: $color-primary-foreground;
+    }
+
+    &[data-variant='solid'] {
+        border-color: $color-foreground;
+        background: $color-foreground;
+        color: $color-background;
+    }
+
+    &[data-variant='secondary'] {
+        background: $color-muted;
+        color: $color-foreground;
+    }
+
+    &[data-variant='destructive'] {
+        border-color: $color-destructive-border;
+        background: $color-destructive-surface;
+        color: $color-destructive-text;
+    }
+
+    &[data-variant='outline'] {
+        border-color: $color-border;
+        color: $color-muted-foreground;
+    }
+
+    &[data-variant='ghost']:hover {
+        background: $color-muted;
+        color: $color-muted-foreground;
+    }
+
+    &[data-variant='link'] {
+        color: $color-foreground;
+        text-underline-offset: 3px;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &[data-variant='success'],
+    &[data-variant='pending'],
+    &[data-variant='failed'] {
+        &::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            border-radius: $radius-pill;
+            background: currentColor;
+        }
+    }
+
+    &[data-variant='success'] {
+        border-color: $color-success-border;
+        background: $color-success-surface;
+        color: $color-success-text;
+    }
+
+    &[data-variant='pending'] {
+        border-color: $color-warning-border;
+        background: $color-warning-surface;
+        color: $color-warning-text;
+    }
+
+    &[data-variant='failed'] {
+        border-color: $color-destructive-border;
+        background: $color-destructive-surface;
+        color: $color-destructive-text;
+    }
+
+    &[data-variant='default']:is(a):hover,
+    &[data-variant='solid']:is(a):hover {
+        background: color-mix(in srgb, $color-primary 90%, $color-background);
+    }
+
+    &[data-variant='secondary']:is(a):hover,
+    &[data-variant='outline']:is(a):hover {
+        background: $color-muted;
+        color: $color-foreground;
+    }
+
+    @include focus-ring;
+}

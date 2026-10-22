@@ -1,42 +1,44 @@
 @use 'tokens' as *;
 
-.design-preview {
-    display: grid;
-    gap: 24px;
-    max-width: 540px;
-    margin: 0 auto;
-    padding: 48px 16px;
+.registration {
     position: relative;
     z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 540px;
+    gap: clamp(48px, 7vw, 120px);
+    max-width: 1400px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 32px clamp(16px, 5vw, 64px) 40px;
 
-    &__auditorium {
-        height: 320px;
-        overflow: hidden;
-        border: 1px solid $color-border;
-        border-radius: $radius-xl;
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+        padding: 20px 16px 32px;
     }
 
-    &__title {
-        font-size: 2.5rem;
-        font-weight: 600;
-        letter-spacing: -0.045em;
-        line-height: 1;
-    }
-
-    &__stack {
-        display: grid;
-        gap: 20px;
-    }
-
-    &__form {
-        display: grid;
-        gap: 12px;
-    }
-
-    &__row {
+    .registration-intro {
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        gap: 28px;
+        min-width: 0;
+        min-height: calc(100vh - 72px);
+
+        @media (max-width: $breakpoint-lg) {
+            gap: 24px;
+            min-height: auto;
+        }
     }
+
+    .registration-aside {
+        align-self: center;
+        min-width: 0;
+    }
+}
+
+.registration-sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
 }

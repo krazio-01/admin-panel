@@ -1,0 +1,51 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+@keyframes reveal-rise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes letter-rise {
+    from {
+        opacity: 0;
+        transform: translateY(0.35em);
+    }
+}
+
+.reveal {
+    animation: reveal-rise $duration-slow $ease-out both;
+    animation-delay: var(--reveal-delay, 0s);
+
+    @include reduced-motion {
+        animation: none;
+    }
+}
+
+.count-up {
+    font-variant-numeric: tabular-nums;
+}
+
+.animated-height {
+    overflow: hidden;
+}
+
+.split-reveal {
+    display: inline;
+
+    .split-reveal-word {
+        white-space: nowrap;
+
+        .split-reveal-letter {
+            display: inline-block;
+            animation: letter-rise $duration-slow $ease-out both;
+            animation-delay: var(--reveal-delay, 0s);
+
+            @include reduced-motion {
+                animation: none;
+            }
+        }
+    }
+}

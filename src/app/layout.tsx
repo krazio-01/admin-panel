@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
-import { ToastProvider } from '@/components/ui/toast/toast';
 import { classNames } from '@/utils/class-names';
 
 const geistSans = Geist({
@@ -12,6 +11,7 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
     subsets: ['latin'],
+    preload: false,
 });
 
 export const metadata: Metadata = {
@@ -22,12 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
     return (
         <html lang="en" className={classNames(geistSans.variable, geistMono.variable)}>
-            <body>
-                <noscript>
-                    <style>{'[data-count-pending] { opacity: 1 !important; }'}</style>
-                </noscript>
-                <ToastProvider>{children}</ToastProvider>
-            </body>
+            <body>{children}</body>
         </html>
     );
 }

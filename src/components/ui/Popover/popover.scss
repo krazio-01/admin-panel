@@ -1,0 +1,39 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.popover-positioner {
+    isolation: isolate;
+    z-index: 50;
+
+    .popover-content {
+        @include popup;
+        @include fade-scale;
+        display: flex;
+        width: 288px;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        border-radius: $radius-lg;
+        box-shadow: $shadow-popover;
+        transform-origin: var(--transform-origin);
+
+        &[data-anchored] {
+            width: var(--anchor-width);
+            padding: 0;
+        }
+
+        .popover-header {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .popover-title {
+                font-weight: 600;
+            }
+
+            .popover-description {
+                color: $color-muted-foreground;
+            }
+        }
+    }
+}

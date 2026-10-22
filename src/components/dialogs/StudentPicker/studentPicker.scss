@@ -1,0 +1,31 @@
+@use 'tokens' as *;
+
+.student-picker {
+    .student-picker-loading {
+        display: grid;
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .student-picker-failure {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+        padding: 24px 12px;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+        text-align: center;
+    }
+
+    .student-picker-option {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .student-picker-meta {
+            color: $color-muted-foreground;
+            font-family: $font-mono;
+            font-size: 0.75rem;
+        }
+    }
+}

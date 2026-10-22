@@ -6,7 +6,7 @@ export const STAGGER_INTERVAL = 0.06;
 
 export const LETTER_INTERVAL = 0.04;
 
-export const COUNT_UP_DURATION = { first: 0.9, change: 0.4 };
+export const COUNT_UP_SECONDS = 0.4;
 
 export function countUpValue(target: number, progress: number): number {
     const clampedProgress = Math.min(1, Math.max(0, progress));

@@ -1,0 +1,154 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-background;
+    outline: none;
+    transition:
+        border-color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
+
+    &:has(.input-group-control:focus) {
+        @include focus-ring-style;
+    }
+
+    &:has(.input-group-control[aria-invalid='true']) {
+        @include invalid-ring-style;
+    }
+
+    &:has(:disabled) {
+        opacity: 0.5;
+        background: $color-muted;
+    }
+
+    &:has(> [data-align='block-start']),
+    &:has(> [data-align='block-end']) {
+        height: auto;
+        flex-direction: column;
+    }
+
+    &:has(> textarea) {
+        height: auto;
+    }
+
+    &:has(> [data-align='inline-start']) > .input-group-control {
+        padding-left: 6px;
+    }
+
+    &:has(> [data-align='inline-end']) > .input-group-control {
+        padding-right: 6px;
+    }
+
+    &:has(> [data-align='block-start']) > .input-group-control {
+        padding-bottom: 12px;
+    }
+
+    &:has(> [data-align='block-end']) > .input-group-control {
+        padding-top: 12px;
+    }
+
+    .input.input-group-control,
+    .textarea.input-group-control {
+        flex: 1;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+
+        &:focus,
+        &:focus-visible {
+            box-shadow: none;
+        }
+    }
+
+    .textarea.input-group-control {
+        resize: none;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .input-group-addon {
+        display: flex;
+        height: auto;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 0;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: text;
+        user-select: none;
+
+        > svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        &[data-align='inline-start'] {
+            order: -1;
+            padding-left: 12px;
+
+            &:has(> button) {
+                margin-left: -0.3rem;
+            }
+
+            &:has(> kbd) {
+                margin-left: -0.15rem;
+            }
+        }
+
+        &[data-align='inline-end'] {
+            order: 1;
+            padding-right: 12px;
+
+            &:has(> button) {
+                margin-right: -0.3rem;
+            }
+
+            &:has(> kbd) {
+                margin-right: -0.15rem;
+            }
+        }
+
+        &[data-align='block-start'] {
+            order: -1;
+            width: 100%;
+            justify-content: flex-start;
+            padding: 8px 10px 0;
+        }
+
+        &[data-align='block-end'] {
+            order: 1;
+            width: 100%;
+            justify-content: flex-start;
+            padding: 0 10px 8px;
+        }
+
+        .input-group-button:not(:focus-visible, [aria-invalid='true']) {
+            box-shadow: none;
+        }
+
+        .input-group-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: $color-muted-foreground;
+            font-size: 0.875rem;
+
+            svg {
+                width: 16px;
+                height: 16px;
+                pointer-events: none;
+            }
+        }
+    }
+}

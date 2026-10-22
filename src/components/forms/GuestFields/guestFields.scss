@@ -1,0 +1,54 @@
+@use 'tokens' as *;
+
+.guest-fields {
+    display: grid;
+
+    .guest-fields-guest {
+        overflow: hidden;
+
+        .guest-fields-body {
+            display: grid;
+            gap: 18px;
+            padding-bottom: 22px;
+
+            .guest-fields-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-height: 32px;
+
+                .guest-fields-title {
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                }
+            }
+
+            .guest-fields-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 18px 16px;
+
+                @media (max-width: $breakpoint-lg) {
+                    grid-template-columns: minmax(0, 1fr);
+                }
+
+                .guest-fields-field {
+                    display: grid;
+                    align-content: start;
+                    gap: 10px;
+                }
+            }
+        }
+    }
+
+    .guest-fields-add {
+        overflow: hidden;
+
+        .guest-fields-add-button.button[data-variant='outline'] {
+            width: 100%;
+            border-style: dashed;
+            border-color: $color-border-strong;
+            background: transparent;
+        }
+    }
+}

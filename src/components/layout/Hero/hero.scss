@@ -1,0 +1,66 @@
+@use 'tokens' as *;
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+
+    .hero-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        .hero-mark {
+            display: grid;
+            place-items: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: $color-foreground;
+            color: $color-background;
+            font-size: 0.8125rem;
+            font-weight: 700;
+        }
+    }
+
+    .hero-badge.badge {
+        border-radius: $radius-pill;
+        background: rgb(255 255 255 / 0.85);
+        backdrop-filter: blur(6px);
+
+        .hero-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: $radius-pill;
+            background: $color-success;
+            box-shadow: 0 0 0 3px color-mix(in srgb, $color-success 18%, transparent);
+
+            &[data-state='closed'] {
+                background: $color-destructive;
+                box-shadow: 0 0 0 3px color-mix(in srgb, $color-destructive 18%, transparent);
+            }
+        }
+    }
+
+    .hero-title {
+        margin: 14px 0;
+        font-size: clamp(44px, 5.6vw, 76px);
+        font-weight: 600;
+        letter-spacing: -0.045em;
+        line-height: 0.95;
+        overflow-wrap: anywhere;
+
+        .hero-year {
+            color: $color-faint-foreground;
+        }
+    }
+
+    .hero-lead {
+        max-width: 460px;
+        color: $color-muted-foreground;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+}
