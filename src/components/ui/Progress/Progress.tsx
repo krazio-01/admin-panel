@@ -20,8 +20,8 @@ function Progress({
             aria-label={ariaLabel}
             className={classNames('progress', className)}
         >
-            <ProgressPrimitive.Track className="progress__track">
-                <ProgressPrimitive.Indicator className="progress__indicator" />
+            <ProgressPrimitive.Track className="progress-track">
+                <ProgressPrimitive.Indicator className="progress-indicator" />
             </ProgressPrimitive.Track>
         </ProgressPrimitive.Root>
     );

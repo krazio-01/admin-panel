@@ -15,18 +15,18 @@ function ToastList() {
 
     return toasts.map((toast) => (
         <ToastPrimitive.Root key={toast.id} toast={toast} className="toast">
-            <ToastPrimitive.Content className="toast__content">
+            <ToastPrimitive.Content className="toast-content">
                 {toast.type === 'success' && (
-                    <CircleCheckIcon className="toast__icon toast__icon--success" aria-hidden />
+                    <CircleCheckIcon className="toast-icon" data-tone="success" aria-hidden />
                 )}
                 {toast.type === 'error' && (
-                    <CircleAlertIcon className="toast__icon toast__icon--error" aria-hidden />
+                    <CircleAlertIcon className="toast-icon" data-tone="error" aria-hidden />
                 )}
-                <div className="toast__text">
-                    <ToastPrimitive.Title className="toast__title" />
-                    <ToastPrimitive.Description className="toast__description" />
+                <div className="toast-text">
+                    <ToastPrimitive.Title className="toast-title" />
+                    <ToastPrimitive.Description className="toast-description" />
                 </div>
-                <ToastPrimitive.Close className="toast__close" aria-label="Dismiss">
+                <ToastPrimitive.Close className="toast-close" aria-label="Dismiss">
                     <XIcon aria-hidden />
                 </ToastPrimitive.Close>
             </ToastPrimitive.Content>
