@@ -1,0 +1,116 @@
+@use 'tokens' as *;
+
+.auditorium-fallback {
+    --auditorium-fallback-floor: #68686e;
+    --auditorium-fallback-tread: #68686e;
+    --auditorium-fallback-plinth-front: #2e2e32;
+    --auditorium-fallback-plinth-side: #4a4a50;
+    --auditorium-fallback-runner: #28282b;
+    --auditorium-fallback-back-wall: #36363a;
+    --auditorium-fallback-curtain: #2c2c30;
+    --auditorium-fallback-curtain-fold: #3c3c42;
+    --auditorium-fallback-screen-frame: #2a2a30;
+    --auditorium-fallback-stage-top: #2e2e33;
+    --auditorium-fallback-stage-front: #2a2a2e;
+    --auditorium-fallback-row-end: #1f1f23;
+    --auditorium-fallback-chair-fabric: color-mix(in srgb, currentColor 60%, #646464);
+    --auditorium-fallback-chair-fabric-top: color-mix(in srgb, currentColor 60%, #848484);
+    --auditorium-fallback-chair-shell: #1f1f21;
+    --auditorium-fallback-chair-shell-top: #2e2e32;
+    --auditorium-fallback-chair-shadow: rgb(30 30 32 / 0.9);
+
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+
+    @media (pointer: coarse), (max-width: 700px) {
+        --auditorium-fallback-floor: #56565c;
+        --auditorium-fallback-tread: #56565c;
+        --auditorium-fallback-plinth-front: #1c1c1f;
+        --auditorium-fallback-plinth-side: #3a3a40;
+        --auditorium-fallback-runner: #1e1e21;
+        --auditorium-fallback-back-wall: #1f1f23;
+        --auditorium-fallback-curtain: #151518;
+        --auditorium-fallback-curtain-fold: #24242a;
+        --auditorium-fallback-chair-fabric: color-mix(in srgb, currentColor 52%, #121214);
+        --auditorium-fallback-chair-fabric-top: color-mix(in srgb, currentColor 58%, #121214);
+        --auditorium-fallback-chair-shell: #121214;
+        --auditorium-fallback-chair-shell-top: #1c1c1f;
+        --auditorium-fallback-chair-shadow: rgb(18 18 20 / 0.92);
+    }
+
+    .auditorium-fallback-drawing {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .auditorium-fallback-floor {
+        fill: var(--auditorium-fallback-floor);
+    }
+
+    .auditorium-fallback-tread {
+        fill: var(--auditorium-fallback-tread);
+    }
+
+    .auditorium-fallback-plinth-front {
+        fill: var(--auditorium-fallback-plinth-front);
+    }
+
+    .auditorium-fallback-plinth-side {
+        fill: var(--auditorium-fallback-plinth-side);
+    }
+
+    .auditorium-fallback-runner {
+        fill: var(--auditorium-fallback-runner);
+    }
+
+    .auditorium-fallback-back-wall {
+        fill: var(--auditorium-fallback-back-wall);
+    }
+
+    .auditorium-fallback-screen-frame {
+        fill: var(--auditorium-fallback-screen-frame);
+    }
+
+    .auditorium-fallback-stage-top {
+        fill: var(--auditorium-fallback-stage-top);
+    }
+
+    .auditorium-fallback-stage-front {
+        fill: var(--auditorium-fallback-stage-front);
+    }
+
+    .auditorium-fallback-stage-strip {
+        fill: #ffe7b8;
+    }
+
+    .auditorium-fallback-row-end {
+        fill: var(--auditorium-fallback-row-end);
+    }
+
+    .auditorium-fallback-marker {
+        fill: none;
+        stroke: #fafafa;
+        stroke-opacity: 0.7;
+    }
+
+    .auditorium-fallback-screen-label,
+    .auditorium-fallback-stage-label {
+        font-family: $font-sans;
+        font-weight: 600;
+        text-anchor: middle;
+        dominant-baseline: central;
+    }
+
+    .auditorium-fallback-screen-label {
+        fill: #fafafa;
+        letter-spacing: 0.12em;
+    }
+
+    .auditorium-fallback-stage-label {
+        fill: #a1a1aa;
+        letter-spacing: 0.3em;
+    }
+}

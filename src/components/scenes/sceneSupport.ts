@@ -1,0 +1,76 @@
+import { useSyncExternalStore } from 'react';
+
+export type WebglSupport = { isSupported: boolean; isSoftware: boolean };
+
+type NetworkInformationHints = { saveData?: boolean; effectiveType?: string };
+
+const SLOW_EFFECTIVE_TYPES = new Set(['slow-2g', '2g', '3g']);
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+const CONSTRAINED_DEVICE_QUERY = '(pointer: coarse), (max-width: 700px)';
+const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software/i;
+const SERVER_WEBGL_SUPPORT: WebglSupport = { isSupported: false, isSoftware: false };
+
+let cachedWebglSupport: WebglSupport | null = null;
+
+export function readWebglSupport(): WebglSupport {
+    if (cachedWebglSupport !== null) return cachedWebglSupport;
+
+    const probe = document.createElement('canvas');
+    const context = probe.getContext('webgl2') ?? probe.getContext('webgl');
+    const debugInfo = context?.getExtension('WEBGL_debug_renderer_info');
+    const renderer = debugInfo
+        ? String(context?.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL))
+        : '';
+
+    cachedWebglSupport = {
+        isSupported: context !== null,
+        isSoftware: SOFTWARE_RENDERER.test(renderer),
+    };
+
+    context?.getExtension('WEBGL_lose_context')?.loseContext();
+
+    return cachedWebglSupport;
+}
+
+export function readServerWebglSupport(): WebglSupport {
+    return SERVER_WEBGL_SUPPORT;
+}
+
+export function subscribeToNothing() {
+    return () => undefined;
+}
+
+function isSlowConnection(): boolean {
+    const connection = (navigator as Navigator & { connection?: NetworkInformationHints })
+        .connection;
+
+    return (
+        Boolean(connection?.saveData) || SLOW_EFFECTIVE_TYPES.has(connection?.effectiveType ?? '')
+    );
+}
+
+export function isConstrainedDevice(): boolean {
+    return matchMedia(CONSTRAINED_DEVICE_QUERY).matches;
+}
+
+export function canRunScenes(): boolean {
+    if (isSlowConnection() || matchMedia(REDUCED_MOTION_QUERY).matches) return false;
+
+    return readWebglSupport().isSupported;
+}
+
+function subscribeToReducedMotion(onChange: () => void) {
+    const query = matchMedia(REDUCED_MOTION_QUERY);
+
+    query.addEventListener('change', onChange);
+
+    return () => query.removeEventListener('change', onChange);
+}
+
+export function usePrefersReducedMotion(): boolean {
+    return useSyncExternalStore(
+        subscribeToReducedMotion,
+        () => matchMedia(REDUCED_MOTION_QUERY).matches,
+        () => false,
+    );
+}
