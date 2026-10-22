@@ -1,0 +1,44 @@
+@use 'tokens' as *;
+
+.notice.card {
+    align-items: flex-start;
+    gap: 0;
+    padding: 32px;
+
+    .notice-icon {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 20px;
+        border: 1px solid $color-border;
+        border-radius: $radius;
+        color: $color-foreground;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    .notice-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+
+    .notice-description {
+        margin-top: 8px;
+        color: $color-muted-foreground;
+        line-height: 1.5;
+    }
+
+    .notice-footer {
+        margin-top: 24px;
+        padding-top: 16px;
+        width: 100%;
+        border-top: 1px solid $color-border;
+        color: $color-muted-foreground;
+        font-size: 0.8125rem;
+    }
+}

@@ -1,0 +1,42 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.stat-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    @media (max-width: $breakpoint-lg) {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .stat-tiles-tile {
+        min-width: 124px;
+        padding: 10px 14px;
+        border: 1px solid $color-border;
+        border-radius: $radius;
+        @include frosted-glass;
+
+        @media (max-width: $breakpoint-lg) {
+            min-width: 0;
+            padding: 10px 12px;
+        }
+
+        .stat-tiles-label {
+            display: block;
+            color: $color-muted-foreground;
+            font-size: 0.75rem;
+        }
+
+        .stat-tiles-value {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+    }
+}

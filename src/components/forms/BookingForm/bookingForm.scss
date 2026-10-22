@@ -1,0 +1,126 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.booking-form.card {
+    gap: 0;
+    padding: 0;
+    overflow: visible;
+    @include frosted-glass;
+
+    .booking-form-header {
+        padding: 32px 32px 0;
+        gap: 8px;
+    }
+
+    .booking-form-steps {
+        margin: 24px 32px 0;
+        position: relative;
+        z-index: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 4px;
+        border-radius: $radius-lg;
+        background: $color-muted;
+        list-style: none;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            z-index: -1;
+            width: calc((100% - 16px) / 3);
+            translate: calc(var(--active-step-index, 0) * (100% + 4px)) 0;
+            border-radius: calc(#{$radius} - 3px);
+            background: $color-background;
+            box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+            transition: translate $duration-base $ease-out;
+        }
+
+        .booking-form-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            padding: 0 12px;
+            color: $color-muted-foreground;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+            user-select: none;
+            transition: color $duration-fast $ease-out;
+
+            &[aria-current='step'] {
+                color: $color-foreground;
+            }
+        }
+    }
+
+    .booking-form-content {
+        padding: 28px 32px 32px;
+
+        .booking-form-step-panel {
+            display: grid;
+            gap: 22px;
+
+            .booking-form-field {
+                display: grid;
+                gap: 10px;
+
+                .booking-form-code-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .booking-form-sent-to {
+                    margin-top: -4px;
+                    color: $color-muted-foreground;
+                    font-size: 0.8125rem;
+
+                    strong {
+                        color: $color-foreground;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .booking-form-bot-check {
+                min-height: 71px;
+            }
+
+            .booking-form-actions {
+                display: grid;
+                gap: 12px;
+                margin-top: 4px;
+
+                .booking-form-hint {
+                    color: $color-muted-foreground;
+                    font-size: 0.75rem;
+                    text-align: center;
+                }
+            }
+
+            .booking-form-link.button {
+                height: auto;
+                font-size: inherit;
+            }
+        }
+    }
+
+    @media (max-width: $breakpoint-lg) {
+        .booking-form-header {
+            padding: 24px 20px 0;
+        }
+
+        .booking-form-steps {
+            margin: 20px 20px 0;
+        }
+
+        .booking-form-content {
+            padding: 24px 20px 24px;
+        }
+    }
+}

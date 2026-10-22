@@ -1,0 +1,82 @@
+@use 'tokens' as *;
+
+.table-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+
+    .table {
+        width: 100%;
+        caption-side: bottom;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+
+        .table-header {
+            tr {
+                border-bottom: 1px solid $color-border;
+            }
+
+            .table-row:hover {
+                background: transparent;
+            }
+        }
+
+        .table-body {
+            tr:last-child {
+                border-bottom: 0;
+            }
+        }
+
+        .table-footer {
+            border-top: 1px solid $color-border;
+            background: color-mix(in srgb, $color-muted 50%, transparent);
+            font-weight: 500;
+
+            > tr:last-child {
+                border-bottom: 0;
+            }
+        }
+
+        .table-row {
+            border-bottom: 1px solid $color-border;
+            transition: background-color $duration-fast $ease-out;
+
+            &:hover,
+            &:has([aria-expanded='true']) {
+                background: $color-row-hover;
+            }
+
+            &[data-state='selected'] {
+                background: $color-muted;
+            }
+        }
+
+        .table-head-cell {
+            height: 44px;
+            padding: 0 20px;
+            text-align: left;
+            vertical-align: middle;
+            color: $color-muted-foreground;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .table-cell {
+            padding: 13px 20px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table-head-cell:has([role='checkbox']),
+        .table-cell:has([role='checkbox']) {
+            padding-right: 0;
+        }
+
+        .table-caption {
+            margin-top: 16px;
+            color: $color-muted-foreground;
+            font-size: 0.875rem;
+        }
+    }
+}

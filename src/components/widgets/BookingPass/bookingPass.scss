@@ -1,0 +1,98 @@
+@use 'tokens' as *;
+
+.booking-pass {
+    display: grid;
+    gap: 22px;
+
+    .booking-pass-check {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: $radius-pill;
+        background: $color-primary;
+        color: $color-primary-foreground;
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .booking-pass-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .booking-pass-student {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 8px;
+        margin-top: 4px;
+        font-size: 0.875rem;
+
+        .booking-pass-meta {
+            color: $color-muted-foreground;
+            font-family: $font-mono;
+            font-size: 0.75rem;
+        }
+    }
+
+    .booking-pass-seats {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border: 1px solid $color-border;
+        border-radius: $radius;
+        background: $color-muted;
+
+        .booking-pass-label {
+            color: $color-muted-foreground;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .booking-pass-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            .booking-pass-chip {
+                display: inline-flex;
+                align-items: center;
+                height: 30px;
+                padding: 0 12px;
+                border: 1px solid $color-border;
+                border-radius: $radius-md;
+                background: $color-background;
+                font-family: $font-mono;
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .booking-pass-email {
+        display: flex;
+        gap: 10px;
+        color: $color-muted-foreground;
+        font-size: 0.875rem;
+        line-height: 1.5;
+
+        svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .booking-pass-address {
+            color: $color-foreground;
+            font-weight: 500;
+        }
+    }
+}

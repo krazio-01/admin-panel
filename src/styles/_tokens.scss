@@ -4,16 +4,15 @@ $color-muted: #f4f4f5;
 $color-muted-foreground: #71717a;
 $color-faint-foreground: #a1a1aa;
 $color-border: #e4e4e7;
+$color-seat-available: #d4d4d8;
+$color-seat-booked: #3f3f46;
 $color-border-strong: #d4d4d8;
 $color-primary: #18181b;
 $color-primary-foreground: #fafafa;
 $color-ring: #18181b;
 $color-row-hover: #fafafa;
 
-$color-surface: $color-background;
 $color-popover: $color-background;
-$color-subtle: $color-muted;
-$color-input: $color-border;
 
 $color-success: #16a34a;
 $color-warning: #d97706;
@@ -36,14 +35,8 @@ $radius-lg: $radius;
 $radius-xl: calc(#{$radius} + 4px);
 $radius-pill: 9999px;
 
-$space-1: 4px;
-$space-2: 8px;
-$space-3: 12px;
-$space-4: 16px;
-$space-6: 24px;
-$space-8: 32px;
-
-$breakpoint-md: 720px;
+$breakpoint-sm: 640px;
+$breakpoint-lg: 960px;
 
 $font-sans: var(--font-geist-sans), system-ui, sans-serif;
 $font-mono: var(--font-geist-mono), ui-monospace, monospace;

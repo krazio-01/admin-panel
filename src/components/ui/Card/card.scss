@@ -1,0 +1,94 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.card {
+    --card-spacing: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-spacing);
+    padding: var(--card-spacing) 0;
+    border: 1px solid $color-border;
+    border-radius: $radius-xl;
+    overflow: hidden;
+    background: $color-background;
+    color: $color-foreground;
+    font-size: 0.875rem;
+    box-shadow: $shadow-xs;
+
+    &[data-size='sm'] {
+        --card-spacing: 16px;
+    }
+
+    &[data-raised] {
+        box-shadow: $shadow-raised;
+    }
+
+    &:has(.card-footer) {
+        padding-bottom: 0;
+    }
+
+    &:has(> img:first-child) {
+        padding-top: 0;
+    }
+
+    > img:first-child {
+        border-top-left-radius: $radius-xl;
+        border-top-right-radius: $radius-xl;
+    }
+
+    > img:last-child {
+        border-bottom-left-radius: $radius-xl;
+        border-bottom-right-radius: $radius-xl;
+    }
+
+    .card-header {
+        display: grid;
+        align-items: start;
+        grid-auto-rows: min-content;
+        gap: 6px;
+        padding: 0 var(--card-spacing);
+
+        &:has(.card-action) {
+            grid-template-columns: 1fr auto;
+        }
+
+        &:has(.card-description) {
+            grid-template-rows: auto auto;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .card-description {
+            color: $color-muted-foreground;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .card-action {
+            grid-column-start: 2;
+            grid-row: 1 / span 2;
+            align-self: start;
+            justify-self: end;
+        }
+    }
+
+    .card-content {
+        padding: 0 var(--card-spacing);
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+        padding: var(--card-spacing);
+        @include footer-surface;
+    }
+
+    &[data-size='sm'] .card-title {
+        font-size: 0.9375rem;
+    }
+}
