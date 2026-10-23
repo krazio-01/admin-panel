@@ -2,36 +2,27 @@
 import { createContext, useContext, useState, useSyncExternalStore, type ReactNode } from 'react';
 import {
     createAppStore,
+    INITIAL_CONNECTION,
     type AppSliceKey,
     type AppSlices,
     type AppState,
     type AppStore,
 } from '@/context/appStore';
 
-const AppContext = createContext<AppStore | null>(null);
+type AppRuntime = { store: AppStore; signInPath?: string };
 
-export function AppProvider({
-    initialState,
-    children,
-}: {
-    initialState: AppState;
-    children: ReactNode;
-}) {
-    const [store] = useState(() => createAppStore(initialState));
+const AppContext = createContext<AppRuntime | null>(null);
 
-    return <AppContext.Provider value={store}>{children}</AppContext.Provider>;
-}
+export function useAppRuntime(): AppRuntime {
+    const runtime = useContext(AppContext);
 
-function useAppStore(): AppStore {
-    const store = useContext(AppContext);
+    if (!runtime) throw new Error('App context hooks must be used inside AppProvider');
 
-    if (!store) throw new Error('useAppContext must be used inside AppProvider');
-
-    return store;
+    return runtime;
 }
 
 export function useAppContext<Key extends AppSliceKey>(key: Key): AppSlices[Key] {
-    const store = useAppStore();
+    const { store } = useAppRuntime();
 
     const readSlice = () => store.getState()[key];
     const slice = useSyncExternalStore(store.subscribe, readSlice, readSlice);
@@ -42,5 +33,26 @@ export function useAppContext<Key extends AppSliceKey>(key: Key): AppSlices[Key]
 }
 
 export function useUpdateAppContext(): AppStore['updateSlice'] {
-    return useAppStore().updateSlice;
+    return useAppRuntime().store.updateSlice;
+}
+
+export function useRefreshSlice(): AppStore['refreshSlice'] {
+    return useAppRuntime().store.refreshSlice;
+}
+
+export function AppProvider({
+    initialState,
+    signInPath,
+    children,
+}: {
+    initialState: AppState;
+    signInPath?: string;
+    children: ReactNode;
+}) {
+    const [runtime] = useState<AppRuntime>(() => ({
+        store: createAppStore({ connection: INITIAL_CONNECTION, ...initialState }),
+        signInPath,
+    }));
+
+    return <AppContext.Provider value={runtime}>{children}</AppContext.Provider>;
 }
