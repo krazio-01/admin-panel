@@ -1,7 +1,9 @@
 import 'server-only';
 import mongoose from 'mongoose';
+import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { ADMIN_SIGN_IN_HREF } from '@/components/layout/navigation';
 import { getEnv } from '@/lib/env';
 import { connectDb } from '@/lib/db';
 import { InvalidCredentialsError, UnauthorizedError } from '@/lib/errors';
@@ -15,10 +17,19 @@ import {
     verifySession,
 } from '@/lib/security/tokens';
 import { UserModel, type UserRole } from '@/models';
+import { loginSchema, SESSION_ROLES } from '@/types/admin';
 import { assertSameOrigin } from '@/utils/http';
-import { writeAudit } from './audit';
+import { writeAudit } from '@/lib/logger';
+
+export type AdminSession = { role: 'admin'; userId: string; name: string };
+export type CheckerSession = { role: 'checker'; userId: string; name: string };
 
 let dummyHash: Promise<string> | undefined;
+
+export const createSessionSchema = z.object({
+    ...loginSchema.shape,
+    role: z.enum(SESSION_ROLES),
+});
 
 async function authenticate(
     role: UserRole,
@@ -70,10 +81,6 @@ export async function resolveActiveSession(
     return { userId: String(user._id), name: user.name };
 }
 
-export type AdminSession = { role: 'admin'; userId: string; name: string };
-
-export type CheckerSession = { role: 'checker'; userId: string; name: string };
-
 export async function getAdminSession(): Promise<AdminSession | null> {
     const cookieStore = await cookies();
     const adminCookie = cookieStore.get(ADMIN_COOKIE);
@@ -97,7 +104,7 @@ export async function requireAdminSession() {
 
 export async function requireAdminPage() {
     const session = await getAdminSession();
-    if (!session) redirect('/admin/login');
+    if (!session) redirect(ADMIN_SIGN_IN_HREF);
 
     return session;
 }

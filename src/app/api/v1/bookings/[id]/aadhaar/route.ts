@@ -1,6 +1,6 @@
 import { withDomainErrors } from '@/lib/errors';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
-import { revealAadhaar } from '@/services/server/aadhaar';
+import { revealAadhaar } from '@/services/server/bookings';
 import { requireAdminSession } from '@/services/server/auth';
 import { assertSameOriginFetch } from '@/utils/http';
 

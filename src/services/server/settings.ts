@@ -1,21 +1,29 @@
 import 'server-only';
+import { z } from 'zod';
 import { connectDb } from '@/lib/db';
 import { NotFoundError, SettingsConflictError } from '@/lib/errors';
 import { EVENT_SETTINGS_KEY, SettingsModel, type SettingsDocument } from '@/models';
-import type { UpdateSettingsInput } from '@/types/admin';
+import type { EventSettings, EventSettingsFields } from '@/types/admin';
 
-export type EventSettings = {
-    eventName: string;
-    eventDate: Date;
-    gatesOpenAt: Date;
-    venue: string;
-    rows: number;
-    seatsPerRow: number;
-    maxGuestsPerBooking: number;
-    bookingsOpen: boolean;
-    nextSeatIndex: number;
-    totalSeats: number;
-};
+const trimmedText = z.string().trim();
+
+const wholeNumber = z.number().int();
+
+const settingsFields = z.object({
+    eventName: trimmedText.min(1).max(120),
+    eventDate: z.coerce.date(),
+    gatesOpenAt: z.coerce.date(),
+    venue: trimmedText.min(1).max(160),
+    rows: wholeNumber.min(1).max(100),
+    seatsPerRow: wholeNumber.min(1).max(60),
+    maxGuestsPerBooking: wholeNumber.min(1).max(10),
+    bookingsOpen: z.boolean(),
+});
+
+export const updateSettingsSchema: z.ZodType<EventSettingsFields, unknown> = settingsFields.refine(
+    (settings) => settings.gatesOpenAt <= settings.eventDate,
+    { message: 'Gates must open on or before the event starts', path: ['gatesOpenAt'] },
+);
 
 function toEventSettings(settings: SettingsDocument): EventSettings {
     return {
@@ -32,16 +40,22 @@ function toEventSettings(settings: SettingsDocument): EventSettings {
     };
 }
 
-export async function getEventSettings(): Promise<EventSettings> {
+export async function findEventSettings(): Promise<EventSettings | null> {
     await connectDb();
 
     const settings = await SettingsModel.findOne({ key: EVENT_SETTINGS_KEY }).lean();
-    if (!settings) throw new NotFoundError('Event settings are not configured');
 
-    return toEventSettings(settings);
+    return settings ? toEventSettings(settings) : null;
 }
 
-export async function updateEventSettings(input: UpdateSettingsInput): Promise<EventSettings> {
+export async function getEventSettings(): Promise<EventSettings> {
+    const settings = await findEventSettings();
+    if (!settings) throw new NotFoundError('Event settings are not configured');
+
+    return settings;
+}
+
+export async function updateEventSettings(input: EventSettingsFields): Promise<EventSettings> {
     await connectDb();
 
     if (input.maxGuestsPerBooking > input.seatsPerRow) {

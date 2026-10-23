@@ -3,11 +3,8 @@ import { BotCheckFailedError, withDomainErrors } from '@/lib/errors';
 import { getBotCheck, getEmailSender } from '@/providers';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
 import { requireAdminSession } from '@/services/server/auth';
-import { createBooking } from '@/services/server/bookings';
-import { listBookings } from '@/services/server/dashboard';
-import { assertEmailProof } from '@/services/server/emailVerification';
-import { sendConfirmationEmail } from '@/services/server/emails';
-import { bookingListQuerySchema } from '@/types/admin';
+import { bookingListQuerySchema, createBooking, listBookings } from '@/services/server/bookings';
+import { assertEmailProof, sendConfirmationEmail } from '@/services/server/emails';
 import { createBookingBodySchema } from '@/types/booking';
 import { parseBody, parseIdempotencyKey, parseQuery } from '@/utils/http';
 

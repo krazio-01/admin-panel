@@ -2,31 +2,18 @@ import 'server-only';
 import { connectDb } from '@/lib/db';
 import { isWellFormedQrToken } from '@/lib/security/tokens';
 import { type BookingDocument, BookingModel } from '@/models';
-import { AADHAAR_GROUP_SIZE, AADHAAR_LENGTH } from '@/types/booking';
+import {
+    AADHAAR_GROUP_SIZE,
+    AADHAAR_LENGTH,
+    type CheckInBooking,
+    type CheckInResult,
+} from '@/types/booking';
 import { groupCharacters, maskStart } from '@/utils/text';
-import { writeAudit } from './audit';
-
-export type CheckInGuest = { name: string; aadhaarMasked: string | null };
+import { writeAudit } from '@/lib/logger';
 
 export type CheckerIdentity = { id: string; name: string };
 
-type BookingSummary = {
-    studentName: string;
-    studentGroup: string;
-    seats: string[];
-    guests: CheckInGuest[];
-};
-
-export type CheckInResult =
-    | ({ outcome: 'checked_in' } & BookingSummary)
-    | ({
-          outcome: 'already_checked_in';
-          checkedInAt: string;
-          checkedInByName: string | null;
-      } & BookingSummary)
-    | { outcome: 'invalid' };
-
-function summarize(booking: BookingDocument): BookingSummary {
+function summarize(booking: BookingDocument): CheckInBooking {
     return {
         studentName: booking.studentName,
         studentGroup: booking.studentGroup,

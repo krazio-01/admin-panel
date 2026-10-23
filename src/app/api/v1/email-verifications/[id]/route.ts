@@ -1,6 +1,6 @@
 import { withDomainErrors } from '@/lib/errors';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
-import { confirmEmailVerification } from '@/services/server/emailVerification';
+import { confirmEmailVerification } from '@/services/server/emails';
 import { confirmEmailVerificationSchema } from '@/types/booking';
 import { parseBody } from '@/utils/http';
 

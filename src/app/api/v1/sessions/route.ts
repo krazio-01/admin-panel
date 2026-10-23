@@ -8,8 +8,7 @@ import {
     sessionCookieOptions,
 } from '@/lib/security/tokens';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
-import { loginAdmin, loginChecker } from '@/services/server/auth';
-import { createSessionSchema } from '@/types/admin';
+import { createSessionSchema, loginAdmin, loginChecker } from '@/services/server/auth';
 import { assertSameOrigin, parseBody } from '@/utils/http';
 
 export const dynamic = 'force-dynamic';
