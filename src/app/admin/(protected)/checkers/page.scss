@@ -1,0 +1,13 @@
+.checkers-page {
+    display: grid;
+    gap: 24px;
+
+    .checkers-page-card {
+        gap: 0;
+        padding: 0;
+
+        .checkers-page-fallback {
+            margin: 20px;
+        }
+    }
+}

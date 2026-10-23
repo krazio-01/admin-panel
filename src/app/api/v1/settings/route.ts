@@ -1,9 +1,8 @@
 import { withDomainErrors } from '@/lib/errors';
 import { clientIp } from '@/providers/rate-limit';
-import { writeAudit } from '@/services/server/audit';
+import { writeAudit } from '@/lib/logger';
 import { requireAdminMutation } from '@/services/server/auth';
-import { updateEventSettings } from '@/services/server/settings';
-import { updateSettingsSchema } from '@/types/admin';
+import { updateEventSettings, updateSettingsSchema } from '@/services/server/settings';
 import { parseBody } from '@/utils/http';
 
 export const dynamic = 'force-dynamic';

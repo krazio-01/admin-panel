@@ -1,19 +1,24 @@
-import type { z } from 'zod';
-import type { BookingConfirmation } from '@/services/server/bookings';
-import type { CheckerRow } from '@/services/server/checkers';
-import type { CheckInResult } from '@/services/server/checkin';
-import type { BookingPage, DashboardSnapshot } from '@/services/server/dashboard';
-import type { EmailDelivery } from '@/services/server/emails';
-import type { EventSettings } from '@/services/server/settings';
-import type { ImportResult, StudentOption } from '@/services/server/students';
 import type {
-    bookingListQuerySchema,
-    createCheckerSchema,
-    CreateSessionInput,
-    updateCheckerSchema,
-    updateSettingsSchema,
+    BookingListQuery,
+    BookingPage,
+    CheckerRow,
+    CreateCheckerInput,
+    DashboardSnapshot,
+    EventSettings,
+    ImportResult,
+    SessionRole,
+    StudentListQuery,
+    StudentPage,
+    UpdateCheckerInput,
+    UpdateSettingsBody,
 } from '@/types/admin';
-import type { CreateBookingFormValues } from '@/types/booking';
+import type {
+    BookingConfirmation,
+    CheckInResult,
+    CreateBookingFormValues,
+    EmailDelivery,
+    StudentOption,
+} from '@/types/booking';
 
 export class ApiError extends Error {
     constructor(
@@ -27,12 +32,27 @@ export class ApiError extends Error {
     }
 }
 
+export type FieldIssue = { path: string; message: string };
+
+export function fieldErrorsOf(error: unknown): Record<string, string> {
+    if (!(error instanceof ApiError) || !Array.isArray(error.details)) return {};
+
+    const messages: Record<string, string> = {};
+
+    for (const issue of error.details as FieldIssue[]) messages[issue.path] ??= issue.message;
+
+    return messages;
+}
+
 type RequestOptions = {
     method?: string;
     json?: unknown;
     headers?: Record<string, string>;
     acceptedStatuses?: number[];
+    signal?: AbortSignal;
 };
+
+type QueryValues = Record<string, string | number | boolean | undefined>;
 
 async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const hasBody = options.json !== undefined;
@@ -40,6 +60,7 @@ async function apiRequest<T>(path: string, options: RequestOptions = {}): Promis
         method: options.method ?? (hasBody ? 'POST' : 'GET'),
         headers: { ...(hasBody && { 'Content-Type': 'application/json' }), ...options.headers },
         body: hasBody ? JSON.stringify(options.json) : undefined,
+        signal: options.signal,
     });
 
     const response = await request.catch((networkError: unknown) => {
@@ -68,12 +89,29 @@ async function apiRequest<T>(path: string, options: RequestOptions = {}): Promis
     return (await response.json()) as T;
 }
 
+function withQuery(path: string, query: QueryValues): string {
+    const params = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(query)) {
+        if (value !== undefined && value !== '') params.set(key, String(value));
+    }
+
+    const queryString = params.toString();
+
+    return queryString ? `${path}?${queryString}` : path;
+}
+
 const API_ROOT = '/api/v1';
 
 export const api = {
     students: {
         listAvailable: (): Promise<StudentOption[]> =>
             apiRequest<StudentOption[]>(`${API_ROOT}/students?booked=false`),
+        list: (
+            query: StudentListQuery & { pageSize: number },
+            signal?: AbortSignal,
+        ): Promise<StudentPage> =>
+            apiRequest<StudentPage>(withQuery(`${API_ROOT}/students`, query), { signal }),
         import: (csv: string): Promise<ImportResult> =>
             apiRequest<ImportResult>(`${API_ROOT}/students`, { json: { csv } }),
     },
@@ -93,19 +131,8 @@ export const api = {
             }),
     },
     bookings: {
-        list: (query: Partial<z.output<typeof bookingListQuerySchema>>): Promise<BookingPage> => {
-            const params = new URLSearchParams();
-
-            for (const [key, value] of Object.entries(query)) {
-                if (value !== undefined && value !== '') params.set(key, String(value));
-            }
-
-            const queryString = params.toString();
-
-            return apiRequest<BookingPage>(
-                `${API_ROOT}/bookings${queryString ? `?${queryString}` : ''}`,
-            );
-        },
+        list: (query: BookingListQuery, signal?: AbortSignal): Promise<BookingPage> =>
+            apiRequest<BookingPage>(withQuery(`${API_ROOT}/bookings`, query), { signal }),
         create: (
             values: CreateBookingFormValues,
             idempotencyKey: string,
@@ -125,8 +152,8 @@ export const api = {
             ),
     },
     dashboard: {
-        get: (): Promise<DashboardSnapshot> =>
-            apiRequest<DashboardSnapshot>(`${API_ROOT}/dashboard`),
+        get: (signal?: AbortSignal): Promise<DashboardSnapshot> =>
+            apiRequest<DashboardSnapshot>(`${API_ROOT}/dashboard`, { signal }),
     },
     aadhaar: {
         purge: (): Promise<{ bookingsUpdated: number }> =>
@@ -141,27 +168,27 @@ export const api = {
     },
     sessions: {
         create: (
-            role: CreateSessionInput['role'],
+            role: SessionRole,
             username: string,
             password: string,
-        ): Promise<{ role: CreateSessionInput['role']; expiresInSeconds: number }> =>
+        ): Promise<{ role: SessionRole; expiresInSeconds: number }> =>
             apiRequest(`${API_ROOT}/sessions`, { json: { role, username, password } }),
-        delete: (role: CreateSessionInput['role']): Promise<void> =>
+        delete: (role: SessionRole): Promise<void> =>
             apiRequest<void>(`${API_ROOT}/sessions/${encodeURIComponent(role)}`, {
                 method: 'DELETE',
             }),
     },
     checkers: {
-        create: (values: z.input<typeof createCheckerSchema>): Promise<CheckerRow> =>
+        create: (values: CreateCheckerInput): Promise<CheckerRow> =>
             apiRequest<CheckerRow>(`${API_ROOT}/checkers`, { json: values }),
-        update: (id: string, changes: z.input<typeof updateCheckerSchema>): Promise<CheckerRow> =>
+        update: (id: string, changes: UpdateCheckerInput): Promise<CheckerRow> =>
             apiRequest<CheckerRow>(`${API_ROOT}/checkers/${encodeURIComponent(id)}`, {
                 method: 'PATCH',
                 json: changes,
             }),
     },
     settings: {
-        update: (values: z.input<typeof updateSettingsSchema>): Promise<EventSettings> =>
+        update: (values: UpdateSettingsBody): Promise<EventSettings> =>
             apiRequest<EventSettings>(`${API_ROOT}/settings`, { method: 'PUT', json: values }),
     },
 };

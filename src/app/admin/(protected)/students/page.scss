@@ -1,0 +1,21 @@
+.students-page {
+    display: grid;
+    gap: 24px;
+
+    .students-page-card {
+        max-width: 880px;
+    }
+
+    .students-page-list {
+        gap: 0;
+        padding: 0;
+
+        .students-page-list-header {
+            padding: 20px 20px 16px;
+        }
+
+        .students-page-fallback {
+            margin: 20px;
+        }
+    }
+}

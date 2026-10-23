@@ -5,12 +5,22 @@ import './animations.scss';
 import { classNames } from '@/utils/class-names';
 import { COUNT_UP_SECONDS, countUpValue, DURATION, EASE_OUT } from '@/utils/motion';
 
-const loadMotionFeatures = () =>
-    import('@/components/ui/Animations/motionFeatures').then((module) => module.domAnimation);
+const MOTION_FEATURE_LOADERS = {
+    animation: () =>
+        import('@/components/ui/Animations/motionFeatures').then((module) => module.domAnimation),
+    layout: () =>
+        import('@/components/ui/Animations/motionLayoutFeatures').then((module) => module.domMax),
+};
 
-function MotionProvider({ children }: { children: ReactNode }) {
+function MotionProvider({
+    features = 'animation',
+    children,
+}: {
+    features?: keyof typeof MOTION_FEATURE_LOADERS;
+    children: ReactNode;
+}) {
     return (
-        <LazyMotion features={loadMotionFeatures} strict>
+        <LazyMotion features={MOTION_FEATURE_LOADERS[features]} strict>
             <MotionConfig reducedMotion="user">{children}</MotionConfig>
         </LazyMotion>
     );

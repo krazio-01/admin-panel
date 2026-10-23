@@ -1,0 +1,52 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.dot-terrain {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+    overflow: hidden;
+    background: $color-surface;
+
+    .dot-terrain-backdrop {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+
+        .dot-terrain-fallback {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.8s $ease-out;
+
+            .dot-terrain-fallback-plane {
+                position: absolute;
+                inset: 30% 0 0;
+                background-image: radial-gradient(
+                    circle,
+                    color-mix(in srgb, $color-secondary-foreground 50%, transparent) 1px,
+                    transparent 1.5px
+                );
+                background-size: 16px 16px;
+                background-position: center top;
+                mask-image: linear-gradient(to bottom, transparent 0%, black 85%);
+            }
+        }
+
+        .dot-terrain-canvas {
+            position: absolute;
+            inset: 0;
+        }
+    }
+
+    &[data-scene-ready] .dot-terrain-backdrop .dot-terrain-fallback {
+        opacity: 0;
+    }
+
+    .dot-terrain-content {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: fit-content;
+    }
+}

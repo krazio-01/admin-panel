@@ -1,7 +1,5 @@
 import { type InferSchemaType, type Model, model, models, Schema } from 'mongoose';
 
-export type EmailStatus = 'pending' | 'sent' | 'failed';
-
 const guestSchema = new Schema(
     {
         name: { type: String, required: true },

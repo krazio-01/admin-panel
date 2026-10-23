@@ -27,7 +27,7 @@
 
     .hero-badge.badge {
         border-radius: $radius-pill;
-        background: rgb(255 255 255 / 0.85);
+        background: $color-translucent-background;
         backdrop-filter: blur(6px);
 
         .hero-dot {

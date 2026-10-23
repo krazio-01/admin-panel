@@ -1,9 +1,7 @@
 'use client';
-import { useId, useRef, type KeyboardEvent, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { useLayoutEffect, useRef, type KeyboardEvent, type ReactNode } from 'react';
 import './segmentedControl.scss';
 import { classNames } from '@/utils/class-names';
-import { DURATION, EASE_OUT } from '@/utils/motion';
 
 type SegmentedControlOption<Value extends string> = { value: Value; label: ReactNode };
 
@@ -23,9 +21,37 @@ function SegmentedControl<Value extends string>({
     className?: string;
     'aria-label'?: string;
 }) {
-    const indicatorId = useId();
-    const prefersReducedMotion = useReducedMotion();
+    const rootRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const selectedIndex = options.findIndex((option) => option.value === value);
+
+    useLayoutEffect(() => {
+        const root = rootRef.current;
+
+        if (!root) return;
+
+        const placeIndicator = () => {
+            const selected = optionRefs.current[selectedIndex];
+
+            if (!selected) return;
+
+            root.style.setProperty('--segmented-control-offset', `${selected.offsetLeft}px`);
+            root.style.setProperty('--segmented-control-width', `${selected.offsetWidth}px`);
+
+            if (root.dataset.measured) return;
+
+            void root.offsetWidth;
+            root.dataset.measured = 'true';
+        };
+
+        placeIndicator();
+
+        const observer = new ResizeObserver(placeIndicator);
+
+        observer.observe(root);
+
+        return () => observer.disconnect();
+    }, [selectedIndex]);
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
         const step = NEXT_KEYS.includes(event.key) ? 1 : PREVIOUS_KEYS.includes(event.key) ? -1 : 0;
@@ -33,8 +59,7 @@ function SegmentedControl<Value extends string>({
 
         event.preventDefault();
 
-        const currentIndex = options.findIndex((option) => option.value === value);
-        const nextIndex = (currentIndex + step + options.length) % options.length;
+        const nextIndex = (selectedIndex + step + options.length) % options.length;
 
         onValueChange(options[nextIndex].value);
         optionRefs.current[nextIndex]?.focus();
@@ -42,11 +67,13 @@ function SegmentedControl<Value extends string>({
 
     return (
         <div
+            ref={rootRef}
             role="radiogroup"
             aria-label={ariaLabel}
             className={classNames('segmented-control', className)}
             onKeyDown={handleKeyDown}
         >
+            <span className="segmented-control-highlight" aria-hidden="true" />
             {options.map((option, index) => {
                 const isSelected = option.value === value;
 
@@ -63,16 +90,6 @@ function SegmentedControl<Value extends string>({
                         className="segmented-control-option"
                         onClick={() => onValueChange(option.value)}
                     >
-                        {isSelected && (
-                            <motion.span
-                                layoutId={indicatorId}
-                                className="segmented-control-highlight"
-                                transition={{
-                                    duration: prefersReducedMotion ? 0 : DURATION.base,
-                                    ease: EASE_OUT,
-                                }}
-                            />
-                        )}
                         <span className="segmented-control-label">{option.label}</span>
                     </button>
                 );

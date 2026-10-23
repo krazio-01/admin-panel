@@ -1,4 +1,14 @@
 import pino, { type LoggerOptions } from 'pino';
+import { connectDb } from '@/lib/db';
+import { AuditLogModel } from '@/models';
+
+export type AuditEntry = {
+    actor: string;
+    action: string;
+    targetId?: string;
+    ip?: string;
+    details?: string;
+};
 
 const LOG_REDACT_PATHS = [
     'aadhaar',
@@ -35,3 +45,8 @@ export const loggerOptions: LoggerOptions = {
 };
 
 export const logger = pino(loggerOptions);
+
+export async function writeAudit(entry: AuditEntry): Promise<void> {
+    await connectDb();
+    await AuditLogModel.create(entry);
+}

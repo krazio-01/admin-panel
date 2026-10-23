@@ -6,7 +6,7 @@ import './studentSelect.scss';
 import { Hotkey } from '@/components/ui/Hotkey/Hotkey';
 import type { StudentsState } from '@/components/dialogs/StudentPicker/StudentPicker';
 import { api } from '@/services/client/api';
-import type { StudentOption } from '@/services/server/students';
+import type { StudentOption } from '@/types/booking';
 import { formatStudentGroupAndId } from '@/utils/booking-form';
 
 const StudentPicker = dynamic(

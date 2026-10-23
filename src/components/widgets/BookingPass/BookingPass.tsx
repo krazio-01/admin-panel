@@ -2,8 +2,8 @@
 import { m } from 'motion/react';
 import { CheckIcon, MailIcon } from 'lucide-react';
 import './bookingPass.scss';
-import type { BookingConfirmation } from '@/services/server/bookings';
-import type { StudentOption } from '@/services/server/students';
+import type { BookingConfirmation } from '@/types/booking';
+import type { StudentOption } from '@/types/booking';
 import { formatStudentGroupAndId } from '@/utils/booking-form';
 import { DURATION, EASE_OUT, STAGGER_INTERVAL } from '@/utils/motion';
 

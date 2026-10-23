@@ -1,0 +1,51 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.checkers-table {
+    min-width: 0;
+
+    .checkers-table-row {
+        .checkers-table-name {
+            display: block;
+            font-weight: 500;
+        }
+
+        .checkers-table-username {
+            display: block;
+            color: $color-muted-foreground;
+            font-family: $font-mono;
+            font-size: 0.75rem;
+        }
+
+        .checkers-table-status {
+            animation: checkers-table-status-pop $duration-base $ease-out;
+
+            @include reduced-motion {
+                animation: none;
+            }
+        }
+
+        .checkers-table-muted {
+            color: $color-muted-foreground;
+            white-space: nowrap;
+        }
+
+        .checkers-table-actions {
+            display: inline-flex;
+            gap: 4px;
+            white-space: nowrap;
+        }
+    }
+}
+
+@keyframes checkers-table-status-pop {
+    from {
+        opacity: 0;
+        scale: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}

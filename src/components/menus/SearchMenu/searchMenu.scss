@@ -1,0 +1,66 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.search-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 280px;
+    height: 32px;
+    padding: 0 6px 0 10px;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-background;
+    color: $color-faint-foreground;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: border-color $duration-fast $ease-out;
+    @include focus-ring;
+
+    &:hover {
+        border-color: $color-border-strong;
+    }
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .search-menu-label {
+        flex: 1;
+        text-align: left;
+    }
+
+    @media (max-width: $breakpoint-xl) {
+        width: auto;
+
+        .search-menu-label {
+            @include visually-hidden;
+        }
+    }
+}
+
+.search-menu-dialog {
+    .search-menu-booking {
+        display: grid;
+        min-width: 0;
+
+        .search-menu-booking-name {
+            font-weight: 500;
+        }
+
+        .search-menu-booking-meta {
+            overflow: hidden;
+            color: $color-muted-foreground;
+            font-size: 0.75rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .search-menu-status {
+        padding: 8px 10px;
+        color: $color-muted-foreground;
+        font-size: 0.8125rem;
+    }
+}

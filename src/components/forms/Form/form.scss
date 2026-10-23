@@ -1,0 +1,54 @@
+@use 'tokens' as *;
+
+.form {
+    .form-field {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+
+        .form-field-control {
+            position: relative;
+
+            &[data-icon] .input {
+                padding-left: 38px;
+            }
+
+            &[data-adornment] .input {
+                padding-right: 64px;
+            }
+
+            &:focus-within .form-field-icon {
+                color: $color-foreground;
+            }
+
+            .form-field-icon {
+                position: absolute;
+                top: 50%;
+                left: 12px;
+                display: flex;
+                color: $color-faint-foreground;
+                pointer-events: none;
+                translate: 0 -50%;
+                transition: color $duration-base $ease-out;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            .form-field-adornment {
+                position: absolute;
+                top: 50%;
+                right: 6px;
+                display: flex;
+                translate: 0 -50%;
+            }
+        }
+
+        .form-field-hint {
+            color: $color-muted-foreground;
+            font-size: 0.8125rem;
+        }
+    }
+}

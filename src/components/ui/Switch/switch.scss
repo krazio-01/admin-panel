@@ -1,0 +1,52 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.switch {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    width: 32px;
+    height: 18px;
+    padding: 1px;
+    border: 1px solid transparent;
+    border-radius: $radius-pill;
+    background: $color-border-strong;
+    cursor: pointer;
+    transition:
+        background-color $duration-fast $ease-out,
+        box-shadow $duration-fast $ease-out;
+
+    &:focus-visible {
+        box-shadow: $shadow-focus;
+        outline: 2px solid $color-ring;
+        outline-offset: 2px;
+    }
+
+    &[data-checked] {
+        background: $color-primary;
+
+        .switch-thumb {
+            translate: 14px 0;
+        }
+    }
+
+    &[data-disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    .switch-thumb {
+        display: block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: $color-background;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+        transition: translate $duration-fast $ease-out;
+
+        @include reduced-motion {
+            transition: none;
+        }
+    }
+}

@@ -1,8 +1,7 @@
 import { withDomainErrors } from '@/lib/errors';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
 import { requireAdminMutation } from '@/services/server/auth';
-import { updateChecker } from '@/services/server/checkers';
-import { updateCheckerSchema } from '@/types/admin';
+import { updateChecker, updateCheckerSchema } from '@/services/server/checkers';
 import { parseBody } from '@/utils/http';
 
 export const dynamic = 'force-dynamic';

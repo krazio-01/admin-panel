@@ -1,7 +1,7 @@
 import { withDomainErrors } from '@/lib/errors';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
 import { requireCheckerMutation } from '@/services/server/auth';
-import { checkInByToken } from '@/services/server/checkin';
+import { checkInByToken } from '@/services/server/checkIns';
 import { checkInSchema } from '@/types/admin';
 import { parseBody } from '@/utils/http';
 

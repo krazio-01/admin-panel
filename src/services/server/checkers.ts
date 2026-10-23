@@ -1,20 +1,18 @@
 import 'server-only';
 import mongoose from 'mongoose';
+import { z } from 'zod';
 import { connectDb } from '@/lib/db';
 import { NotFoundError, UsernameTakenError } from '@/lib/errors';
 import { hashPassword } from '@/lib/security/password';
 import { UserModel } from '@/models';
-import type { CreateCheckerInput, UpdateCheckerInput } from '@/types/admin';
-import { writeAudit } from './audit';
-
-export type CheckerRow = {
-    id: string;
-    name: string;
-    username: string;
-    active: boolean;
-    lastLoginAt: string | null;
-    createdAt: string;
-};
+import {
+    checkerNameSchema,
+    passwordSchema,
+    type CheckerRow,
+    type CreateCheckerInput,
+    type UpdateCheckerInput,
+} from '@/types/admin';
+import { writeAudit } from '@/lib/logger';
 
 type CheckerRecord = {
     _id: unknown;
@@ -24,6 +22,14 @@ type CheckerRecord = {
     lastLoginAt?: Date | null;
     createdAt: Date;
 };
+
+export const updateCheckerSchema: z.ZodType<UpdateCheckerInput> = z
+    .object({
+        active: z.boolean().optional(),
+        password: z.optional(passwordSchema),
+        name: z.optional(checkerNameSchema),
+    })
+    .refine((update) => Object.keys(update).length > 0, 'Provide at least one field to update');
 
 function toRow(user: CheckerRecord): CheckerRow {
     return {

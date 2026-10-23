@@ -91,3 +91,38 @@ export type CreateBookingInput = Omit<CreateBookingBody, 'botToken' | 'emailVeri
 };
 
 export type CreateBookingFormValues = z.input<typeof createBookingBodySchema>;
+
+export type EmailStatus = 'pending' | 'sent' | 'failed';
+
+export type EmailDelivery = {
+    status: EmailStatus;
+    sentAt: string | null;
+    attempts: number;
+    lastError: string | null;
+};
+
+export type StudentOption = { id: string; name: string; group: string; idNumber: string };
+
+export type BookingConfirmation = {
+    bookingId: string;
+    seats: string[];
+    primaryEmailMasked: string;
+};
+
+export type CheckInGuest = { name: string; aadhaarMasked: string | null };
+
+export type CheckInBooking = {
+    studentName: string;
+    studentGroup: string;
+    seats: string[];
+    guests: CheckInGuest[];
+};
+
+export type CheckInResult =
+    | ({ outcome: 'checked_in' } & CheckInBooking)
+    | ({
+          outcome: 'already_checked_in';
+          checkedInAt: string;
+          checkedInByName: string | null;
+      } & CheckInBooking)
+    | { outcome: 'invalid' };

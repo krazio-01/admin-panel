@@ -1,23 +1,28 @@
 import 'server-only';
 import type { Types } from 'mongoose';
 import Papa from 'papaparse';
-import { connectDb } from '@/lib/db';
+import { z } from 'zod';
+import { connectDb, pagingQueryFields, resolvePaging } from '@/lib/db';
 import { ValidationError } from '@/lib/errors';
 import { StudentModel, type StudentDocument } from '@/models';
-
-export type StudentOption = { id: string; name: string; group: string; idNumber: string };
-
-export type ImportResult = {
-    inserted: number;
-    skipped: number;
-    errors: { line: number; reason: string }[];
-};
+import {
+    MAX_IMPORT_ROWS,
+    type ImportResult,
+    type StudentListQuery,
+    type StudentPage,
+    type StudentRow,
+} from '@/types/admin';
+import { escapeRegex } from '@/utils/text';
+import type { StudentOption } from '@/types/booking';
 
 type AvailableStudentRow = Pick<StudentDocument, 'name' | 'group' | 'idNumber'> & {
     _id: Types.ObjectId;
 };
 
-const MAX_IMPORT_ROWS = 5000;
+type StudentRecord = Pick<StudentDocument, 'name' | 'group' | 'idNumber' | 'hasBooked'> & {
+    _id: Types.ObjectId;
+};
+
 const MAX_REPORTED_ERRORS = 50;
 
 const HEADER_ALIASES: Record<string, 'name' | 'group' | 'idNumber'> = {
@@ -28,6 +33,15 @@ const HEADER_ALIASES: Record<string, 'name' | 'group' | 'idNumber'> = {
     id: 'idNumber',
 };
 
+const STUDENT_SORT = { group: 1, name: 1, _id: 1 } as const;
+const STUDENT_COLLATION = { locale: 'en', numericOrdering: true };
+
+export const studentListQuerySchema: z.ZodType<StudentListQuery, unknown> = z.object({
+    search: z.string().trim().max(100).optional(),
+    booked: z.stringbool().optional(),
+    ...pagingQueryFields,
+});
+
 function canonicalHeader(header: string): string {
     const normalized = header.toLowerCase().replace(/[^a-z]/g, '');
     return HEADER_ALIASES[normalized] ?? normalized;
@@ -37,8 +51,8 @@ export async function listAvailableStudents(): Promise<StudentOption[]> {
     await connectDb();
 
     const students = await StudentModel.find({ hasBooked: false }, 'name group idNumber', {
-        sort: { group: 1, name: 1 },
-        collation: { locale: 'en', numericOrdering: true },
+        sort: STUDENT_SORT,
+        collation: STUDENT_COLLATION,
     }).lean<AvailableStudentRow[]>();
 
     return students.map((student) => ({
@@ -47,6 +61,40 @@ export async function listAvailableStudents(): Promise<StudentOption[]> {
         group: student.group,
         idNumber: student.idNumber,
     }));
+}
+
+export async function listStudents(query: StudentListQuery): Promise<StudentPage> {
+    await connectDb();
+
+    const { page, pageSize, skip } = resolvePaging(query);
+    const filter: Record<string, unknown> = {};
+    if (query.booked !== undefined) filter.hasBooked = query.booked;
+
+    const search = query.search?.trim();
+    if (search) {
+        const pattern = new RegExp(escapeRegex(search), 'i');
+        filter.$or = [{ name: pattern }, { group: pattern }, { idNumber: pattern }];
+    }
+
+    const [students, total] = await Promise.all([
+        StudentModel.find(filter, 'name group idNumber hasBooked', {
+            sort: STUDENT_SORT,
+            collation: STUDENT_COLLATION,
+            skip,
+            limit: pageSize,
+        }).lean<StudentRecord[]>(),
+        StudentModel.countDocuments(filter),
+    ]);
+
+    const items: StudentRow[] = students.map((student) => ({
+        id: String(student._id),
+        name: student.name,
+        group: student.group,
+        idNumber: student.idNumber,
+        hasBooked: student.hasBooked,
+    }));
+
+    return { items, total, page, pageSize };
 }
 
 export async function importStudentsCsv(csvText: string): Promise<ImportResult> {

@@ -1,22 +1,34 @@
-import { ValidationError, withDomainErrors } from '@/lib/errors';
+import { withDomainErrors } from '@/lib/errors';
 import { clientIp, enforceRateLimit } from '@/providers/rate-limit';
-import { writeAudit } from '@/services/server/audit';
-import { requireAdminMutation } from '@/services/server/auth';
-import { importStudentsCsv, listAvailableStudents } from '@/services/server/students';
+import { writeAudit } from '@/lib/logger';
+import { requireAdminMutation, requireAdminSession } from '@/services/server/auth';
+import {
+    importStudentsCsv,
+    listAvailableStudents,
+    listStudents,
+    studentListQuerySchema,
+} from '@/services/server/students';
 import { importStudentsSchema } from '@/types/admin';
-import { parseBody } from '@/utils/http';
+import { parseBody, parseQuery } from '@/utils/http';
 
 export const dynamic = 'force-dynamic';
 
 export const GET = withDomainErrors(async (request: Request) => {
-    await enforceRateLimit('studentsList', clientIp(request));
+    const searchParams = new URL(request.url).searchParams;
+    const isPublicPicker = searchParams.get('booked') === 'false' && searchParams.size === 1;
 
-    if (new URL(request.url).searchParams.get('booked') !== 'false') {
-        throw new ValidationError([{ path: 'booked', message: 'Only booked=false is supported' }]);
+    if (isPublicPicker) {
+        await enforceRateLimit('studentsList', clientIp(request));
+
+        return Response.json(await listAvailableStudents(), {
+            headers: { 'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=60' },
+        });
     }
 
-    return Response.json(await listAvailableStudents(), {
-        headers: { 'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=60' },
+    await requireAdminSession();
+
+    return Response.json(await listStudents(parseQuery(request, studentListQuerySchema)), {
+        headers: { 'Cache-Control': 'no-store' },
     });
 });
 

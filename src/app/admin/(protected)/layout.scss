@@ -1,0 +1,32 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.console {
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    min-height: 100vh;
+    font-size: 0.875rem;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .console-main {
+        min-width: 0;
+
+        .console-import {
+            @media (max-width: $breakpoint-sm) {
+                display: none;
+            }
+        }
+
+        .console-content {
+            max-width: 1480px;
+            padding: 28px;
+
+            @media (max-width: $breakpoint-lg) {
+                padding: 16px;
+            }
+        }
+    }
+}

@@ -1,6 +1,7 @@
 import 'server-only';
 import mongoose, { type ClientSession } from 'mongoose';
-import { connectDb } from '@/lib/db';
+import { z } from 'zod';
+import { connectDb, pagingQueryFields, resolvePaging } from '@/lib/db';
 import {
     BookingsClosedError,
     IdempotencyKeyConflictError,
@@ -9,20 +10,38 @@ import {
     StudentAlreadyBookedError,
     TooManyGuestsError,
 } from '@/lib/errors';
-import { encryptField } from '@/lib/security/encryption';
+import { writeAudit } from '@/lib/logger';
+import { decryptField, encryptField } from '@/lib/security/encryption';
 import { generateQrToken } from '@/lib/security/tokens';
-import { BookingModel, EVENT_SETTINGS_KEY, SettingsModel, StudentModel } from '@/models';
-import type { CreateBookingInput } from '@/types/booking';
+import {
+    type BookingDocument,
+    BookingModel,
+    EVENT_SETTINGS_KEY,
+    SettingsModel,
+    StudentModel,
+} from '@/models';
+import type { BookingListQuery, BookingPage, BookingRow } from '@/types/admin';
+import {
+    AADHAAR_GROUP_SIZE,
+    AADHAAR_LENGTH,
+    type BookingConfirmation,
+    type CreateBookingInput,
+} from '@/types/booking';
 import { allocateSeatRange, seatLabels } from '@/utils/seats';
-import { maskEmail } from '@/utils/text';
+import { escapeRegex, groupCharacters, maskEmail, maskStart } from '@/utils/text';
+import { toEmailDelivery } from './emails';
 
-export type BookingConfirmation = {
-    bookingId: string;
-    seats: string[];
-    primaryEmailMasked: string;
-};
+type BookingWithTimestamps = BookingDocument & { _id: unknown; createdAt: Date };
+export type RevealedGuest = { name: string; aadhaar: string | null };
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
+
+export const bookingListQuerySchema: z.ZodType<BookingListQuery, unknown> = z.object({
+    search: z.string().trim().max(100).optional(),
+    status: z.enum(['confirmed', 'checkedIn']).optional(),
+    emailStatus: z.enum(['pending', 'sent', 'failed']).optional(),
+    ...pagingQueryFields,
+});
 
 function toConfirmation(
     booking: {
@@ -109,6 +128,28 @@ async function bookInTransaction(
     return toConfirmation(booking, input.studentId);
 }
 
+function toRow(booking: BookingWithTimestamps): BookingRow {
+    return {
+        id: String(booking._id),
+        studentName: booking.studentName,
+        studentGroup: booking.studentGroup,
+        seats: booking.seats,
+        status: booking.status,
+        email: toEmailDelivery(booking.email),
+        checkedInAt: booking.checkedInAt?.toISOString() ?? null,
+        checkedInByName: booking.checkedInByName ?? null,
+        createdAt: booking.createdAt.toISOString(),
+        guests: booking.guests.map((guest) => ({
+            name: guest.name,
+            phone: guest.phone,
+            email: guest.email,
+            aadhaarMasked: guest.aadhaarLast4
+                ? groupCharacters(maskStart(guest.aadhaarLast4, AADHAAR_LENGTH), AADHAAR_GROUP_SIZE)
+                : null,
+        })),
+    };
+}
+
 export async function createBooking(input: CreateBookingInput): Promise<BookingConfirmation> {
     await connectDb();
 
@@ -133,4 +174,76 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingC
 
         throw new StudentAlreadyBookedError();
     }
+}
+
+export async function listBookings(query: BookingListQuery): Promise<BookingPage> {
+    await connectDb();
+
+    const { page, pageSize, skip } = resolvePaging(query);
+    const filter: Record<string, unknown> = {};
+    if (query.status) filter.status = query.status;
+    if (query.emailStatus) filter['email.status'] = query.emailStatus;
+
+    const search = query.search?.trim();
+    if (search) {
+        const pattern = new RegExp(escapeRegex(search), 'i');
+        filter.$or = [
+            { studentName: pattern },
+            { 'guests.name': pattern },
+            { 'guests.phone': pattern },
+            { 'guests.email': pattern },
+        ];
+    }
+
+    const [bookings, total] = await Promise.all([
+        BookingModel.find(filter, null, {
+            sort: { createdAt: -1, _id: -1 },
+            skip,
+            limit: pageSize,
+            lean: true,
+        }),
+        BookingModel.countDocuments(filter),
+    ]);
+
+    return {
+        items: (bookings as unknown as BookingWithTimestamps[]).map(toRow),
+        total,
+        page,
+        pageSize,
+    };
+}
+
+export async function purgeAadhaar(
+    actor: string,
+    ip?: string,
+): Promise<{ bookingsUpdated: number }> {
+    await connectDb();
+    await writeAudit({ actor, action: 'admin.purge_aadhaar', ip });
+
+    const result = await BookingModel.updateMany(
+        {},
+        { $set: { 'guests.$[].aadhaarEncrypted': null, 'guests.$[].aadhaarLast4': null } },
+    );
+
+    return { bookingsUpdated: result.modifiedCount };
+}
+
+export async function revealAadhaar(
+    bookingId: string,
+    actor: string,
+    ip?: string,
+): Promise<RevealedGuest[]> {
+    if (!mongoose.isValidObjectId(bookingId)) throw new NotFoundError('Booking not found');
+
+    await connectDb();
+
+    const booking = await BookingModel.findById(bookingId, null, { lean: true });
+    if (!booking) throw new NotFoundError('Booking not found');
+
+    await writeAudit({ actor, action: 'admin.reveal_aadhaar', targetId: bookingId, ip });
+
+    return booking.guests.map((guest) => ({
+        name: guest.name,
+        aadhaar: guest.aadhaarEncrypted ? decryptField(guest.aadhaarEncrypted) : null,
+    }));
 }

@@ -1,7 +1,7 @@
 import { withDomainErrors } from '@/lib/errors';
 import { getEmailSender } from '@/providers';
 import { clientIp } from '@/providers/rate-limit';
-import { writeAudit } from '@/services/server/audit';
+import { writeAudit } from '@/lib/logger';
 import { requireAdminMutation } from '@/services/server/auth';
 import { resendConfirmationEmail } from '@/services/server/emails';
 

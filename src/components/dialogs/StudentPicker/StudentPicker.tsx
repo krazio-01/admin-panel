@@ -11,8 +11,9 @@ import {
     CommandList,
 } from '@/components/ui/CommandMenu/CommandMenu';
 import { Button } from '@/components/ui/Button/Button';
+import { EmptyState } from '@/components/ui/EmptyState/EmptyState';
 import { Skeleton } from '@/components/ui/Skeleton/Skeleton';
-import type { StudentOption } from '@/services/server/students';
+import type { StudentOption } from '@/types/booking';
 import { formatStudentGroupAndId } from '@/utils/booking-form';
 
 export type StudentsState =
@@ -73,7 +74,18 @@ export function StudentPicker({
 
                     {studentsState.status === 'ready' && (
                         <>
-                            <CommandEmpty>No student found.</CommandEmpty>
+                            <CommandEmpty>
+                                <EmptyState
+                                    size="compact"
+                                    title="No student found"
+                                    description="Check the spelling, or search by group or ID number."
+                                    preview={{
+                                        name: 'students',
+                                        status: 'search',
+                                        message: 'no matches',
+                                    }}
+                                />
+                            </CommandEmpty>
                             <CommandGroup heading="Students">
                                 {studentsState.students.map((student) => (
                                     <CommandItem

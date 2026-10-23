@@ -1,3 +1,5 @@
+import type { SeatState } from '@/types/admin';
+
 const ALPHABET_LENGTH = 26;
 
 export function rowLabel(rowIndex: number): string {
@@ -45,4 +47,13 @@ export function allocateSeatRange(
     const startIndex = partySize > seatsLeftInRow ? nextSeatIndex + seatsLeftInRow : nextSeatIndex;
     const endIndex = startIndex + partySize;
     return endIndex > totalSeats ? null : { startIndex, nextSeatIndex: endIndex };
+}
+
+export function diffSeatStates(
+    previous: Record<string, SeatState>,
+    next: Record<string, SeatState>,
+): string[] {
+    return Object.keys(next).filter(
+        (label) => next[label] === 'checkedIn' && previous[label] !== 'checkedIn',
+    );
 }
