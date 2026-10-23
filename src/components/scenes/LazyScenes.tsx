@@ -7,6 +7,11 @@ const NEAR_VIEWPORT_MARGIN = '200px';
 const IDLE_TIMEOUT_MS = 2000;
 const IDLE_FALLBACK_DELAY_MS = 200;
 
+const FlypastScene = dynamic(
+    () => import('@/components/scenes/Flypast/Flypast').then((module) => module.Flypast),
+    { ssr: false },
+);
+
 function whenIdle(callback: () => void): () => void {
     if ('requestIdleCallback' in window) {
         const handle = requestIdleCallback(callback, { timeout: IDLE_TIMEOUT_MS });
@@ -58,8 +63,11 @@ export const LazyAuditorium = dynamic(
     { ssr: false },
 );
 
-const FlypastScene = dynamic(
-    () => import('@/components/scenes/Flypast/Flypast').then((module) => module.Flypast),
+export const LazyDotTerrainScene = dynamic(
+    () =>
+        import('@/components/scenes/DotTerrain/DotTerrainScene').then(
+            (module) => module.DotTerrainScene,
+        ),
     { ssr: false },
 );
 
