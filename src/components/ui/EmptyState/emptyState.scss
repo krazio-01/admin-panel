@@ -1,0 +1,129 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 44px;
+    text-align: center;
+    animation: empty-state-rise $duration-slow $ease-out both;
+
+    .empty-state-window {
+        width: min(220px, 100%);
+        margin-bottom: 20px;
+        overflow: hidden;
+        border: 1px solid $color-border;
+        border-radius: $radius-lg;
+        background: $color-background;
+        box-shadow: $shadow-soft;
+        text-align: left;
+    }
+
+    .empty-state-window-bar {
+        display: flex;
+        gap: 5px;
+        padding: 8px 10px;
+        border-bottom: 1px solid $color-border;
+        background: $color-surface;
+
+        i {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: $color-border;
+        }
+    }
+
+    .empty-state-window-body {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 12px 12px;
+        color: $color-muted-foreground;
+        font-family: $font-mono;
+        font-size: 0.6875rem;
+        line-height: 1.7;
+
+        b {
+            color: $color-foreground;
+            font-weight: 500;
+        }
+    }
+
+    .empty-state-caret {
+        display: inline-block;
+        width: 6px;
+        height: 12px;
+        margin-left: 2px;
+        background: $color-primary;
+        vertical-align: -2px;
+        animation: empty-state-blink 1s steps(1) infinite;
+    }
+
+    .empty-state-title {
+        margin: 0 0 6px;
+        color: $color-foreground;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .empty-state-description {
+        max-width: 340px;
+        margin: 0;
+        color: $color-muted-foreground;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+    }
+
+    .empty-state-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+    &[data-size='compact'] {
+        padding: 24px 16px 28px;
+
+        .empty-state-window {
+            width: min(180px, 100%);
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 0.875rem;
+        }
+
+        .empty-state-description {
+            max-width: 260px;
+            font-size: 0.75rem;
+        }
+
+        .empty-state-actions {
+            margin-top: 14px;
+        }
+    }
+
+    @include reduced-motion {
+        animation: none;
+
+        .empty-state-caret {
+            animation: none;
+        }
+    }
+}
+
+@keyframes empty-state-rise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+@keyframes empty-state-blink {
+    50% {
+        opacity: 0;
+    }
+}

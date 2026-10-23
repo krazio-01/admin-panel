@@ -1,4 +1,4 @@
-import { Children, Fragment, type CSSProperties, type ReactNode } from 'react';
+import { Children, Fragment, type ComponentProps, type CSSProperties, type ReactNode } from 'react';
 import './animations.scss';
 import { classNames } from '@/utils/class-names';
 import { LETTER_INTERVAL, STAGGER_INTERVAL } from '@/utils/motion';
@@ -23,9 +23,9 @@ function Reveal({
     );
 }
 
-function Stagger({ className, children }: { className?: string; children: ReactNode }) {
+function Stagger({ className, children, ...props }: ComponentProps<'div'>) {
     return (
-        <div className={classNames('stagger', className)}>
+        <div className={classNames('stagger', className)} {...props}>
             {Children.toArray(children).map((child, index) => (
                 <div key={index} className="reveal" style={revealDelay(index * STAGGER_INTERVAL)}>
                     {child}

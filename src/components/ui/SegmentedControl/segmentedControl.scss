@@ -1,11 +1,43 @@
 @use 'tokens' as *;
+@use 'mixins' as *;
 
 .segmented-control {
+    position: relative;
     display: inline-flex;
     gap: 2px;
     padding: 3px;
     border-radius: $radius-md;
     background: $color-muted;
+
+    .segmented-control-highlight {
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        left: 0;
+        width: var(--segmented-control-width, 0);
+        border-radius: $radius-sm;
+        background: $color-background;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+        opacity: 0;
+        transform: translateX(var(--segmented-control-offset, 0));
+    }
+
+    &[data-measured] .segmented-control-highlight {
+        opacity: 1;
+        transition:
+            transform $duration-base $ease-out,
+            width $duration-base $ease-out;
+
+        @include reduced-motion {
+            transition: none;
+        }
+    }
+
+    &:not([data-measured]) .segmented-control-option[aria-checked='true'] {
+        border-radius: $radius-sm;
+        background: $color-background;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+    }
 
     .segmented-control-option {
         position: relative;
@@ -32,14 +64,6 @@
 
         &:focus-visible {
             box-shadow: 0 0 0 2px $color-ring;
-        }
-
-        .segmented-control-highlight {
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: $color-background;
-            box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
         }
 
         .segmented-control-label {

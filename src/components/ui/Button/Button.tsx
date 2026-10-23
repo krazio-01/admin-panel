@@ -1,3 +1,5 @@
+import type { ComponentProps } from 'react';
+import Link from 'next/link';
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import './button.scss';
 import { classNames, type WithStringClassName } from '@/utils/class-names';
@@ -40,5 +42,21 @@ function Button({
     );
 }
 
-export { Button };
+function ButtonLink({
+    className,
+    variant = 'default',
+    size = 'default',
+    ...props
+}: ComponentProps<typeof Link> & { variant?: ButtonVariant; size?: ButtonSize }) {
+    return (
+        <Link
+            className={classNames('button', className)}
+            data-variant={variant}
+            data-size={size}
+            {...props}
+        />
+    );
+}
+
+export { Button, ButtonLink };
 export type { ButtonSize, ButtonVariant };

@@ -1,9 +1,15 @@
 @use 'tokens' as *;
+@use 'mixins' as *;
 
 .table-container {
     position: relative;
     width: 100%;
     overflow-x: auto;
+    transition: opacity $duration-fast $ease-out;
+
+    &:has(> [data-stale]) {
+        opacity: 0.55;
+    }
 
     .table {
         width: 100%;
@@ -68,6 +74,17 @@
             white-space: nowrap;
         }
 
+        .table-row:has(> .table-cell > .empty-state) {
+            &:hover {
+                background: transparent;
+            }
+
+            .table-cell {
+                padding: 0;
+                white-space: normal;
+            }
+        }
+
         .table-head-cell:has([role='checkbox']),
         .table-cell:has([role='checkbox']) {
             padding-right: 0;
@@ -77,6 +94,57 @@
             margin-top: 16px;
             color: $color-muted-foreground;
             font-size: 0.875rem;
+        }
+    }
+}
+
+.table-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    border-top: 1px solid $color-border;
+    color: $color-muted-foreground;
+    font-size: 0.8125rem;
+
+    .table-pagination-pages {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+.table-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px;
+    border-bottom: 1px solid $color-border;
+
+    .table-search {
+        position: relative;
+        flex: 0 1 300px;
+        min-width: 200px;
+
+        @media (max-width: $breakpoint-sm) {
+            flex-basis: 100%;
+        }
+
+        .table-search-icon {
+            position: absolute;
+            top: 50%;
+            left: 11px;
+            width: 15px;
+            height: 15px;
+            color: $color-faint-foreground;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .input {
+            height: 34px;
+            padding-left: 34px;
         }
     }
 }
