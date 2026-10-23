@@ -1,0 +1,173 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.dashboard {
+    display: grid;
+    gap: 24px;
+
+    .dashboard-live {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 26px;
+        padding: 0 10px;
+        border: 1px solid $color-border;
+        border-radius: $radius-pill;
+        color: $color-muted-foreground;
+        font-size: 0.75rem;
+        font-weight: 500;
+
+        &[data-state='reconnecting'] {
+            border-color: $color-warning-border;
+            background: $color-warning-surface;
+            color: $color-warning-text;
+
+            .dashboard-live-dot {
+                background: $color-warning;
+                animation: none;
+            }
+        }
+
+        .dashboard-live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: $color-success;
+            animation: dashboard-live-pulse 1.6s infinite;
+
+            @include reduced-motion {
+                animation: none;
+            }
+        }
+    }
+
+    .dashboard-muted {
+        color: $color-muted-foreground;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .dashboard-stat-total {
+        color: $color-muted-foreground;
+        font-size: 1.125rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
+
+    .dashboard-split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 380px;
+        gap: 16px;
+
+        @media (max-width: $breakpoint-xl) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    .dashboard-card {
+        gap: 0;
+        padding: 0;
+        border-radius: calc(#{$radius} + 2px);
+
+        .dashboard-card-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 20px 16px;
+
+            .dashboard-card-title {
+                font-size: 0.9375rem;
+                font-weight: 600;
+            }
+
+            .dashboard-card-description {
+                margin-top: 4px;
+                color: $color-muted-foreground;
+                font-size: 0.8125rem;
+            }
+
+            .dashboard-legend {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                color: $color-muted-foreground;
+                font-size: 0.75rem;
+
+                .dashboard-swatch {
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    margin-right: 6px;
+                    border-radius: 3px;
+                    vertical-align: -1px;
+
+                    &[data-state='available'] {
+                        border: 1px solid $color-border-strong;
+                        background: $color-border;
+                    }
+
+                    &[data-state='booked'] {
+                        background: $color-muted-foreground;
+                    }
+
+                    &[data-state='checkedIn'] {
+                        background: $color-foreground;
+                    }
+                }
+            }
+        }
+
+        .dashboard-hall {
+            position: relative;
+            height: 430px;
+            overflow: hidden;
+
+            @media (max-width: $breakpoint-sm) {
+                height: 300px;
+            }
+
+            > * {
+                position: absolute;
+                inset: 0;
+            }
+
+            > .auditorium {
+                opacity: 0;
+                transition: opacity 300ms $ease-out;
+            }
+
+            &[data-scene-ready] {
+                > .auditorium {
+                    opacity: 1;
+                }
+
+                > .auditorium-fallback {
+                    visibility: hidden;
+                    transition: visibility 0s linear 300ms;
+                }
+            }
+        }
+
+        .dashboard-table-fallback {
+            margin: 0 20px 20px;
+        }
+    }
+}
+
+@keyframes dashboard-live-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgb(22 163 74 / 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 7px rgb(22 163 74 / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgb(22 163 74 / 0);
+    }
+}

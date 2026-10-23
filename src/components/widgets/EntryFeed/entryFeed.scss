@@ -1,0 +1,109 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.entry-feed {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .entry-feed-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 20px 0;
+
+        .entry-feed-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+        }
+
+        .entry-feed-description {
+            margin-top: 4px;
+            color: $color-muted-foreground;
+            font-size: 0.8125rem;
+        }
+    }
+
+    .entry-feed-list {
+        display: grid;
+        gap: 2px;
+        margin: 0;
+        padding: 8px 8px 12px;
+        list-style: none;
+
+        .entry-feed-item {
+            display: grid;
+            grid-template-columns: 32px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: $radius-md;
+
+            &:first-child {
+                background: $color-muted;
+            }
+
+            &[data-fresh] {
+                animation: entry-feed-flash 1.4s ease;
+
+                @include reduced-motion {
+                    animation: none;
+                }
+            }
+
+            .entry-feed-icon {
+                display: grid;
+                place-items: center;
+                width: 32px;
+                height: 32px;
+                border: 1px solid $color-border;
+                border-radius: $radius-md;
+                background: $color-background;
+                color: $color-success;
+
+                svg {
+                    width: 15px;
+                    height: 15px;
+                    stroke-width: 2.2;
+                }
+            }
+
+            &[data-kind='alreadyCheckedIn'] .entry-feed-icon {
+                color: $color-warning;
+            }
+
+            .entry-feed-text {
+                min-width: 0;
+
+                .entry-feed-student {
+                    display: block;
+                    overflow: hidden;
+                    font-weight: 500;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .entry-feed-detail {
+                    display: block;
+                    color: $color-muted-foreground;
+                    font-size: 0.75rem;
+                }
+            }
+
+            .entry-feed-time {
+                color: $color-muted-foreground;
+                font-size: 0.75rem;
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+@keyframes entry-feed-flash {
+    from {
+        background: color-mix(in srgb, $color-success 12%, transparent);
+    }
+}

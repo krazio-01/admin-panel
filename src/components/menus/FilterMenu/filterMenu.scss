@@ -1,0 +1,90 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.filter-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px dashed $color-border-strong;
+    border-radius: $radius-md;
+    background: $color-background;
+    color: $color-secondary-foreground;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background-color $duration-fast $ease-out,
+        border-color $duration-fast $ease-out;
+    @include focus-ring;
+
+    &:hover,
+    &[data-popup-open] {
+        background: $color-muted;
+    }
+
+    &[data-active] {
+        border-style: solid;
+        border-color: $color-border;
+    }
+
+    .filter-menu-icon {
+        width: 14px;
+        height: 14px;
+        color: $color-muted-foreground;
+    }
+
+    .filter-menu-value {
+        margin-left: 2px;
+        padding: 1px 6px;
+        border-radius: $radius-sm;
+        background: $color-muted;
+        font-size: 0.75rem;
+    }
+}
+
+.filter-menu-positioner {
+    z-index: 50;
+    outline: none;
+
+    .filter-menu-popup {
+        @include popup;
+        @include fade-scale;
+        min-width: 160px;
+        padding: 4px;
+        border-radius: $radius-md;
+        box-shadow: $shadow-popover;
+        transform-origin: var(--transform-origin);
+
+        .filter-menu-item {
+            display: grid;
+            grid-template-columns: 16px 1fr;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: $radius-sm;
+            cursor: default;
+            outline: none;
+            user-select: none;
+
+            &[data-highlighted] {
+                background: $color-muted;
+            }
+
+            .filter-menu-indicator {
+                display: grid;
+
+                &[data-unchecked] {
+                    visibility: hidden;
+                }
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+        }
+    }
+}

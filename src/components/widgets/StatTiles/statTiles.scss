@@ -24,6 +24,13 @@
             padding: 10px 12px;
         }
 
+        .stat-tiles-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
         .stat-tiles-label {
             display: block;
             color: $color-muted-foreground;
@@ -37,6 +44,70 @@
             font-weight: 500;
             font-variant-numeric: tabular-nums;
             white-space: nowrap;
+        }
+
+        .stat-tiles-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: $color-muted-foreground;
+            font-size: 0.75rem;
+        }
+    }
+
+    &[data-variant='card'] {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+
+        @media (max-width: $breakpoint-xl) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            gap: 10px;
+        }
+
+        .stat-tiles-tile {
+            display: grid;
+            gap: 10px;
+            height: 100%;
+            min-width: 0;
+            padding: 20px;
+            border-radius: calc(#{$radius} + 2px);
+            border-color: $color-border;
+            background: $color-background;
+            box-shadow: 0 1px 2px rgb(0 0 0 / 0.03);
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+
+            @media (max-width: $breakpoint-sm) {
+                padding: 14px;
+            }
+
+            .stat-tiles-head {
+                min-height: 22px;
+            }
+
+            .stat-tiles-label {
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+
+            .stat-tiles-value {
+                margin-top: 0;
+                font-size: 1.875rem;
+                font-weight: 600;
+                letter-spacing: -0.03em;
+
+                @media (max-width: $breakpoint-sm) {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+
+        > .reveal {
+            min-width: 0;
         }
     }
 }
