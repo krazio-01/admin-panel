@@ -1,0 +1,135 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.student-import {
+    display: grid;
+    gap: 16px;
+
+    .student-import-drop-zone {
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        padding: 36px 20px;
+        border: 1.5px dashed $color-border-strong;
+        border-radius: $radius-lg;
+        background: color-mix(in srgb, $color-muted 40%, transparent);
+        text-align: center;
+        cursor: pointer;
+        transition:
+            border-color $duration-fast $ease-out,
+            background-color $duration-fast $ease-out;
+
+        &:hover,
+        &[data-dragging] {
+            border-color: $color-foreground;
+            background: $color-muted;
+        }
+
+        &:has(input:focus-visible) {
+            @include focus-ring-style;
+        }
+
+        &[data-invalid] {
+            border-color: $color-destructive;
+        }
+
+        .student-import-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 4px;
+            border: 1px solid $color-border;
+            border-radius: $radius-md;
+            background: $color-background;
+
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .student-import-prompt {
+            color: $color-muted-foreground;
+
+            strong {
+                color: $color-foreground;
+                font-weight: 500;
+            }
+
+            .student-import-file-name {
+                color: $color-foreground;
+                font-family: $font-mono;
+                font-size: 0.8125rem;
+            }
+        }
+
+        .student-import-hint {
+            color: $color-faint-foreground;
+            font-size: 0.75rem;
+        }
+    }
+
+    .student-import-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+
+        .student-import-progress {
+            display: grid;
+            flex: 1 1 220px;
+            gap: 6px;
+            max-width: 360px;
+
+            .student-import-stage {
+                color: $color-muted-foreground;
+                font-size: 0.75rem;
+            }
+        }
+    }
+
+    .student-import-result {
+        display: grid;
+        gap: 16px;
+
+        .student-import-errors {
+            padding: 14px 16px;
+            border: 1px solid $color-destructive-border;
+            border-radius: $radius-lg;
+            background: $color-destructive-surface;
+            color: $color-destructive-text;
+
+            .student-import-errors-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            .student-import-error-list {
+                display: grid;
+                gap: 4px;
+                max-height: 240px;
+                margin: 10px 0 0;
+                padding: 0;
+                overflow-y: auto;
+                list-style: none;
+                font-size: 0.8125rem;
+
+                .student-import-line {
+                    display: inline-block;
+                    min-width: 64px;
+                    margin-right: 8px;
+                    font-family: $font-mono;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}

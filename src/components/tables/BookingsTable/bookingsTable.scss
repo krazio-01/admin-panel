@@ -1,0 +1,83 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.bookings-table {
+    min-width: 0;
+
+    .bookings-table-row {
+        &[data-flash='odd'] {
+            animation: bookings-table-flash-odd 1.4s ease;
+
+            @include reduced-motion {
+                animation: none;
+            }
+        }
+
+        &[data-flash='even'] {
+            animation: bookings-table-flash-even 1.4s ease;
+
+            @include reduced-motion {
+                animation: none;
+            }
+        }
+
+        .bookings-table-student {
+            display: block;
+            font-weight: 500;
+        }
+
+        .bookings-table-guest {
+            display: block;
+            color: $color-muted-foreground;
+            font-size: 0.75rem;
+        }
+
+        .bookings-table-seats {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 220px;
+
+            .bookings-table-seat {
+                padding: 2px 6px;
+                border-radius: 5px;
+                background: $color-muted;
+                font-family: $font-mono;
+                font-size: 0.75rem;
+            }
+        }
+
+        .bookings-table-check-in {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .bookings-table-checker {
+                color: $color-muted-foreground;
+                font-size: 0.75rem;
+            }
+        }
+
+        .bookings-table-aadhaar {
+            color: $color-muted-foreground;
+            font-family: $font-mono;
+            font-size: 0.8125rem;
+        }
+    }
+
+    .bookings-table-muted {
+        color: $color-muted-foreground;
+    }
+}
+
+@keyframes bookings-table-flash-odd {
+    from {
+        background: $color-muted;
+    }
+}
+
+@keyframes bookings-table-flash-even {
+    from {
+        background: $color-muted;
+    }
+}

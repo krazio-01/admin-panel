@@ -1,0 +1,13 @@
+.bookings-page {
+    display: grid;
+    gap: 24px;
+
+    .bookings-page-card {
+        gap: 0;
+        padding: 0;
+
+        .bookings-page-fallback {
+            margin: 20px;
+        }
+    }
+}

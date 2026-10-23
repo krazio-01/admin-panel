@@ -1,0 +1,14 @@
+@use 'tokens' as *;
+
+.settings-page {
+    display: grid;
+    gap: 24px;
+
+    .settings-page-card {
+        max-width: 880px;
+
+        &[data-tone='danger'] {
+            border-color: $color-destructive-border;
+        }
+    }
+}

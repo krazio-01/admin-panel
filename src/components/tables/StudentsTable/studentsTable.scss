@@ -1,0 +1,19 @@
+@use 'tokens' as *;
+
+.students-table {
+    min-width: 0;
+
+    .students-table-name {
+        font-weight: 500;
+    }
+
+    .students-table-muted {
+        color: $color-muted-foreground;
+    }
+
+    .students-table-id {
+        color: $color-muted-foreground;
+        font-family: $font-mono;
+        font-size: 0.8125rem;
+    }
+}

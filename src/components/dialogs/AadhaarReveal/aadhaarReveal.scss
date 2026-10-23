@@ -1,0 +1,41 @@
+@use 'tokens' as *;
+
+.aadhaar-reveal {
+    .aadhaar-reveal-list {
+        display: grid;
+        gap: 2px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        .aadhaar-reveal-guest {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 12px;
+            border-radius: $radius-md;
+            background: $color-muted;
+
+            .aadhaar-reveal-name {
+                min-width: 0;
+                overflow: hidden;
+                font-weight: 500;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .aadhaar-reveal-number {
+                font-family: $font-mono;
+                font-size: 0.875rem;
+                letter-spacing: 0.02em;
+                white-space: nowrap;
+            }
+
+            .aadhaar-reveal-purged {
+                color: $color-muted-foreground;
+                font-size: 0.8125rem;
+            }
+        }
+    }
+}

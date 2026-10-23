@@ -1,0 +1,21 @@
+@use 'tokens' as *;
+
+.confirm-dialog {
+    .confirm-dialog-form {
+        display: grid;
+        gap: 20px;
+
+        .confirm-dialog-phrase {
+            display: grid;
+            gap: 8px;
+
+            .confirm-dialog-code {
+                padding: 1px 6px;
+                border-radius: $radius-sm;
+                background: $color-muted;
+                font-family: $font-mono;
+                font-size: 0.8125rem;
+            }
+        }
+    }
+}

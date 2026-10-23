@@ -1,0 +1,11 @@
+.checker-dialog {
+    .checker-dialog-form {
+        display: grid;
+        gap: 20px;
+
+        .checker-dialog-fields {
+            display: grid;
+            gap: 16px;
+        }
+    }
+}
