@@ -5,6 +5,14 @@ const APP_UTC_OFFSET = '+05:30';
 
 const DATE_FORMATS = {
     weekdayDayMonth: { weekday: 'short', day: 'numeric', month: 'short' },
+    weekdayDayMonthTime: {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    },
     time: { hour: 'numeric', minute: '2-digit', hour12: true },
     year: { year: 'numeric' },
     fullDateTime: { dateStyle: 'full', timeStyle: 'short' },
@@ -41,7 +49,7 @@ export function formatDate(
 ): string {
     const formatted = getFormatter(format, locale, timeZone).format(date);
 
-    return format === 'time' ? formatted.toUpperCase() : formatted;
+    return formatted.replace(/\b[ap]m\b/i, (dayPeriod) => dayPeriod.toUpperCase());
 }
 
 export function toDateTimeInputValue(date: Date, timeZone = APP_TIME_ZONE): string {

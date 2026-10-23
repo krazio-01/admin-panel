@@ -48,3 +48,10 @@ export function maskEmail(email: string): string {
     const domain = email.slice(separatorIndex + 1);
     return `${localPart[0]}${'*'.repeat(Math.max(localPart.length - 1, 1))}@${domain}`;
 }
+
+export function initials(name: string, count = 2): string {
+    const words = name.split(/\s+/).filter((word) => word.length > 0);
+    const letters = words.slice(0, count).map((word) => word.charAt(0));
+
+    return letters.join('').toUpperCase();
+}

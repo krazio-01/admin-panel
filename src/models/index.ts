@@ -1,5 +1,5 @@
 export { default as AuditLogModel, type AuditLogDocument } from './auditLog';
-export { default as BookingModel, type BookingDocument, type EmailStatus } from './booking';
+export { default as BookingModel, type BookingDocument } from './booking';
 
 export {
     default as EmailVerificationModel,
