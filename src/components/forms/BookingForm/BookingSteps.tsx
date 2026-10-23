@@ -14,7 +14,7 @@ import { GuestFields } from '@/components/forms/GuestFields/GuestFields';
 import { OtpInput } from '@/components/ui/OtpInput/OtpInput';
 import { StudentSelect } from '@/components/forms/StudentSelect/StudentSelect';
 import { Turnstile } from '@/components/forms/Turnstile/Turnstile';
-import type { StudentOption } from '@/services/server/students';
+import type { StudentOption } from '@/types/booking';
 import { VERIFICATION_CODE_LENGTH } from '@/types/booking';
 import { DURATION, EASE_OUT } from '@/utils/motion';
 import { maskEmail } from '@/utils/text';

@@ -24,8 +24,8 @@ import {
 import { useBotCheck, useEmailVerification } from '@/components/forms/BookingForm/bookingFormHooks';
 import { DetailsStep, VerifyStep } from '@/components/forms/BookingForm/BookingSteps';
 import { BookingPass } from '@/components/widgets/BookingPass/BookingPass';
-import type { BookingConfirmation } from '@/services/server/bookings';
-import type { StudentOption } from '@/services/server/students';
+import type { BookingConfirmation } from '@/types/booking';
+import type { StudentOption } from '@/types/booking';
 import { createBookingBodySchema } from '@/types/booking';
 import { DURATION, EASE_OUT } from '@/utils/motion';
 

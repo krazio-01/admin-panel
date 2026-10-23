@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import type { Path, UseFormReturn } from 'react-hook-form';
 import type { BookingDetailsValues, BookingStepEvent } from '@/utils/booking-form';
-import { ApiError, api } from '@/services/client/api';
-import type { BookingConfirmation } from '@/services/server/bookings';
+import { ApiError, api, fieldErrorsOf } from '@/services/client/api';
+import type { BookingConfirmation } from '@/types/booking';
 import { VERIFICATION_CODE_LENGTH } from '@/types/booking';
 
 const VERIFICATION_CODE_ERROR_CODES = new Set([
@@ -142,10 +142,8 @@ export function useEmailVerification({
     };
 
     const applyFieldErrors = (error: ApiError) => {
-        const issues = (error.details as { path: string; message: string }[] | undefined) ?? [];
-
-        for (const issue of issues) {
-            form.setError(issue.path as Path<BookingDetailsValues>, { message: issue.message });
+        for (const [path, message] of Object.entries(fieldErrorsOf(error))) {
+            form.setError(path as Path<BookingDetailsValues>, { message });
         }
 
         dispatchStepEvent('editDetails');
