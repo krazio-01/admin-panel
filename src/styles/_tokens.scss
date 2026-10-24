@@ -31,11 +31,16 @@ $color-destructive-text: #b91c1c;
 $color-destructive-surface: #fef2f2;
 $color-destructive-border: #fecaca;
 
+$color-tricolour-saffron: #ff9933;
+$color-tricolour-white: #ffffff;
+$color-tricolour-green: #138808;
+
 $radius: 0.625rem;
 $radius-sm: calc(#{$radius} - 4px);
 $radius-md: calc(#{$radius} - 2px);
 $radius-lg: $radius;
 $radius-xl: calc(#{$radius} + 4px);
+$radius-2xl: calc(#{$radius} + 12px);
 $radius-pill: 9999px;
 
 $breakpoint-sm: 640px;

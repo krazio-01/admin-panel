@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import './page.scss';
 import { LoginForm } from '@/components/forms/LoginForm/LoginForm';
 import { ADMIN_ROOT_HREF } from '@/components/layout/navigation';
 import { DotTerrain } from '@/components/scenes/DotTerrain/DotTerrain';
@@ -24,9 +23,9 @@ export default async function Page() {
     return (
         <AppProvider initialState={{ signIn: INITIAL_SIGN_IN }}>
             <MotionProvider>
-                <main className="admin-login">
-                    <DotTerrain className="admin-login-stage">
-                        <Reveal className="admin-login-card">
+                <main>
+                    <DotTerrain isFullScreen>
+                        <Reveal>
                             <LoginForm
                                 role="admin"
                                 redirectTo={ADMIN_ROOT_HREF}

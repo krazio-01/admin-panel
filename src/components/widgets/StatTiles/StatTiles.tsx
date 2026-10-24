@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import './statTiles.scss';
 import { Stagger } from '@/components/ui/Animations/Animations';
 import { classNames } from '@/utils/class-names';
@@ -11,15 +11,24 @@ export function StatTiles({
     className,
 }: {
     tiles: StatTile[];
-    variant?: 'compact' | 'card';
+    variant?: 'compact' | 'card' | 'counter';
     className?: string;
 }) {
+    const labelIdPrefix = useId();
+
     return (
         <Stagger className={classNames('stat-tiles', className)} data-variant={variant}>
-            {tiles.map((tile) => (
-                <div key={tile.label} className="stat-tiles-tile">
+            {tiles.map((tile, index) => (
+                <div
+                    key={tile.label}
+                    className="stat-tiles-tile"
+                    role="group"
+                    aria-labelledby={`${labelIdPrefix}-${index}`}
+                >
                     <div className="stat-tiles-head">
-                        <span className="stat-tiles-label">{tile.label}</span>
+                        <span id={`${labelIdPrefix}-${index}`} className="stat-tiles-label">
+                            {tile.label}
+                        </span>
                         {tile.aside}
                     </div>
                     <span className="stat-tiles-value">{tile.value}</span>

@@ -7,14 +7,16 @@ export function Notice({
     title,
     description,
     footer,
+    density = 'comfortable',
 }: {
     icon: ComponentType;
     title: string;
     description: string;
     footer?: ReactNode;
+    density?: 'comfortable' | 'compact';
 }) {
     return (
-        <Card raised className="notice" role="status">
+        <Card raised className="notice" role="status" data-density={density}>
             <span className="notice-icon" aria-hidden="true">
                 <Icon />
             </span>

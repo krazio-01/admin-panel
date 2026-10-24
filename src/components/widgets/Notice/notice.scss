@@ -41,4 +41,12 @@
         color: $color-muted-foreground;
         font-size: 0.8125rem;
     }
+
+    &[data-density='compact'] {
+        padding: 24px;
+
+        .notice-footer {
+            margin-top: 20px;
+        }
+    }
 }
