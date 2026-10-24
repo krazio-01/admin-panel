@@ -13,8 +13,7 @@ import {
 import { usePrefersReducedMotion } from '@/components/scenes/sceneSupport';
 import { RadarFallback } from '@/components/scenes/RadarFallback/RadarFallback';
 import { SceneCanvas } from '@/components/scenes/SceneCanvas/SceneCanvas';
-
-type ScanOutcome = 'ok' | 'used' | 'bad';
+import type { ScanOutcome } from '@/components/widgets/ScanResult/ScanResult';
 
 const OUTCOME_COLORS: Record<ScanOutcome, string> = {
     ok: '#16a34a',

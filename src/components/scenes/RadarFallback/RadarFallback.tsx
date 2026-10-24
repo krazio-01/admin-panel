@@ -1,7 +1,6 @@
 import './radarFallback.scss';
+import type { ScanOutcome } from '@/components/widgets/ScanResult/ScanResult';
 import { classNames } from '@/utils/class-names';
-
-type ScanOutcome = 'ok' | 'used' | 'bad';
 
 const OUTCOME_COLORS: Record<ScanOutcome, string> = {
     ok: '#16a34a',
