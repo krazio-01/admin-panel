@@ -118,11 +118,14 @@ export type CheckInBooking = {
     guests: CheckInGuest[];
 };
 
+export type GateProgress = { guestsIn: number; guestsExpected: number; eventStartsAt: string };
+
 export type CheckInResult =
     | ({ outcome: 'checked_in' } & CheckInBooking)
     | ({
           outcome: 'already_checked_in';
           checkedInAt: string;
           checkedInByName: string | null;
+          isOwnCheckIn: boolean;
       } & CheckInBooking)
     | { outcome: 'invalid' };

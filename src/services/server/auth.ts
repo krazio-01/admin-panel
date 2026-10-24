@@ -114,11 +114,14 @@ export async function requireAdminMutation(request: Request) {
     return requireAdminSession();
 }
 
-export async function requireCheckerMutation(request: Request) {
-    assertSameOrigin(request, getEnv().APP_URL);
-
+export async function requireCheckerSession() {
     const session = await getCheckerSession();
     if (!session) throw new UnauthorizedError();
 
     return session;
+}
+
+export async function requireCheckerMutation(request: Request) {
+    assertSameOrigin(request, getEnv().APP_URL);
+    return requireCheckerSession();
 }

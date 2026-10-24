@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { connectDb } from '@/lib/db';
 import { AuditLogModel, BookingModel, StudentModel, UserModel } from '@/models';
 import type { DashboardSnapshot, DashboardStats, GateEvent, SeatState } from '@/types/admin';
+import { countGuests } from './checkIns';
 import { getEventSettings } from './settings';
 
 type CheckerNameDocument = { _id: unknown; name: string };
@@ -92,26 +93,16 @@ export async function getStats(): Promise<DashboardStats> {
         StudentModel.countDocuments(),
         StudentModel.countDocuments({ hasBooked: true }),
         UserModel.countDocuments({ role: 'checker', active: true }),
-        BookingModel.aggregate<{ guests: number; checkedInGuests: number }>([
-            {
-                $group: {
-                    _id: null,
-                    guests: { $sum: '$seatCount' },
-                    checkedInGuests: {
-                        $sum: { $cond: [{ $eq: ['$status', 'checkedIn'] }, '$seatCount', 0] },
-                    },
-                },
-            },
-        ]),
+        countGuests(),
     ]);
 
     return {
         totalSeats: settings.totalSeats,
         seatsRemaining: settings.totalSeats - settings.nextSeatIndex,
         bookings,
-        guests: guestTotals[0]?.guests ?? 0,
+        guests: guestTotals.guests,
         checkedInBookings,
-        checkedInGuests: guestTotals[0]?.checkedInGuests ?? 0,
+        checkedInGuests: guestTotals.checkedInGuests,
         emailPending,
         emailFailed,
         studentsTotal,

@@ -17,6 +17,7 @@ import type {
     CheckInResult,
     CreateBookingFormValues,
     EmailDelivery,
+    GateProgress,
     StudentOption,
 } from '@/types/booking';
 
@@ -26,6 +27,7 @@ export class ApiError extends Error {
         readonly code: string,
         message: string,
         readonly details?: unknown,
+        readonly retryAfterSeconds?: number,
     ) {
         super(message);
         this.name = 'ApiError';
@@ -81,6 +83,7 @@ async function apiRequest<T>(path: string, options: RequestOptions = {}): Promis
             body?.error?.code ?? 'unknown_error',
             body?.error?.message ?? 'Something went wrong. Please try again.',
             body?.error?.details,
+            Number(response.headers.get('Retry-After')) || undefined,
         );
     }
 
@@ -160,10 +163,13 @@ export const api = {
             apiRequest(`${API_ROOT}/aadhaar`, { method: 'DELETE' }),
     },
     checkIns: {
-        create: (token: string): Promise<CheckInResult> =>
+        progress: (signal?: AbortSignal): Promise<GateProgress> =>
+            apiRequest<GateProgress>(`${API_ROOT}/check-ins`, { signal }),
+        create: (token: string, signal?: AbortSignal): Promise<CheckInResult> =>
             apiRequest<CheckInResult>(`${API_ROOT}/check-ins`, {
                 json: { token },
                 acceptedStatuses: [404, 409],
+                signal,
             }),
     },
     sessions: {

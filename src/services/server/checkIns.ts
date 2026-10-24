@@ -7,11 +7,15 @@ import {
     AADHAAR_LENGTH,
     type CheckInBooking,
     type CheckInResult,
+    type GateProgress,
 } from '@/types/booking';
 import { groupCharacters, maskStart } from '@/utils/text';
 import { writeAudit } from '@/lib/logger';
+import { getEventSettings } from './settings';
 
 export type CheckerIdentity = { id: string; name: string };
+
+export type GuestTotals = { guests: number; checkedInGuests: number };
 
 function summarize(booking: BookingDocument): CheckInBooking {
     return {
@@ -65,6 +69,35 @@ export async function checkInByToken(
         outcome: 'already_checked_in',
         checkedInAt: existing.checkedInAt?.toISOString() ?? '',
         checkedInByName: existing.checkedInByName ?? null,
+        isOwnCheckIn: existing.checkedInBy === checker.id,
         ...summarize(existing),
+    };
+}
+
+export async function countGuests(): Promise<GuestTotals> {
+    await connectDb();
+
+    const [totals] = await BookingModel.aggregate<GuestTotals>([
+        {
+            $group: {
+                _id: null,
+                guests: { $sum: '$seatCount' },
+                checkedInGuests: {
+                    $sum: { $cond: [{ $eq: ['$status', 'checkedIn'] }, '$seatCount', 0] },
+                },
+            },
+        },
+    ]);
+
+    return { guests: totals?.guests ?? 0, checkedInGuests: totals?.checkedInGuests ?? 0 };
+}
+
+export async function getGateProgress(): Promise<GateProgress> {
+    const [settings, totals] = await Promise.all([getEventSettings(), countGuests()]);
+
+    return {
+        guestsIn: totals.checkedInGuests,
+        guestsExpected: totals.guests,
+        eventStartsAt: settings.eventDate.toISOString(),
     };
 }
