@@ -110,4 +110,30 @@
             min-width: 0;
         }
     }
+
+    &[data-variant='counter'] {
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        gap: 8px;
+
+        .stat-tiles-tile {
+            min-width: 0;
+            padding: 9px 10px;
+
+            .stat-tiles-label {
+                font-size: 0.6875rem;
+            }
+
+            .stat-tiles-value {
+                font-size: 1.125rem;
+                font-weight: 600;
+                letter-spacing: -0.02em;
+            }
+        }
+
+        > .reveal {
+            min-width: 0;
+        }
+    }
 }

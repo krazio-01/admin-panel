@@ -21,6 +21,8 @@ export const ADMIN_ROOT_HREF = '/admin';
 
 export const ADMIN_SIGN_IN_HREF = `${ADMIN_ROOT_HREF}/login`;
 
+export const SCANNER_HREF = '/scanner';
+
 export const ADMIN_NAVIGATION: NavigationGroup[] = [
     {
         label: 'Overview',

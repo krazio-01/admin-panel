@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
         return [
             { source: '/:path*', headers: baseHeaders },
             {
-                source: '/scan',
+                source: '/scanner',
                 headers: [
                     ...baseHeaders.filter((header) => header.key !== 'Permissions-Policy'),
                     {

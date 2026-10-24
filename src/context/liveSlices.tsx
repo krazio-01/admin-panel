@@ -14,6 +14,7 @@ type SliceLoaders = Partial<{
 
 const sliceLoaders: SliceLoaders = {
     dashboard: api.dashboard.get,
+    gateProgress: api.checkIns.progress,
 };
 
 type LivePollingOptions<T> = {

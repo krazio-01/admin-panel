@@ -4,7 +4,15 @@ import './dotTerrain.scss';
 import { LazyDotTerrainScene, useSceneGate } from '@/components/scenes/LazyScenes';
 import { classNames } from '@/utils/class-names';
 
-export function DotTerrain({ className, children }: { className?: string; children: ReactNode }) {
+export function DotTerrain({
+    isFullScreen = false,
+    className,
+    children,
+}: {
+    isFullScreen?: boolean;
+    className?: string;
+    children: ReactNode;
+}) {
     const contentRef = useRef<HTMLDivElement>(null);
     const [isSceneReady, setIsSceneReady] = useState(false);
 
@@ -14,6 +22,7 @@ export function DotTerrain({ className, children }: { className?: string; childr
         <div
             className={classNames('dot-terrain', className)}
             data-scene="dot-terrain"
+            data-full-screen={isFullScreen || undefined}
             data-scene-ready={isSceneReady || undefined}
         >
             <div className="dot-terrain-backdrop" aria-hidden="true">

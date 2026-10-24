@@ -1,0 +1,235 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+@keyframes scan-result-shake {
+    20%,
+    60% {
+        transform: translateX(-6px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(6px);
+    }
+}
+
+@keyframes scan-result-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+}
+
+@keyframes scan-result-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes scan-result-fade {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+.scan-result {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 16px;
+
+    .scan-result-card {
+        position: relative;
+        min-height: 170px;
+        padding: 16px;
+        overflow: hidden;
+        border: 1px solid $color-border;
+        border-radius: $radius-xl;
+        background: $color-background;
+        transition:
+            border-color $duration-slow $ease-out,
+            background-color $duration-slow $ease-out;
+
+        .scan-result-message {
+            display: grid;
+            place-items: center;
+            align-content: center;
+            gap: 4px;
+            min-height: 136px;
+            color: $color-muted-foreground;
+            text-align: center;
+
+            .scan-result-message-icon {
+                width: 20px;
+                height: 20px;
+                margin-bottom: 6px;
+                color: $color-faint-foreground;
+            }
+
+            .scan-result-message-title {
+                color: $color-foreground;
+                font-weight: 500;
+            }
+
+            .scan-result-message-text {
+                font-size: 0.8125rem;
+            }
+        }
+
+        .scan-result-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .scan-result-icon {
+                display: grid;
+                flex: none;
+                place-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: $radius-pill;
+                color: $color-primary-foreground;
+                animation: scan-result-pop $duration-slow cubic-bezier(0.2, 1.6, 0.4, 1);
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                    stroke-width: 2.6;
+                }
+            }
+
+            .scan-result-heading {
+                min-width: 0;
+
+                .scan-result-title {
+                    font-size: 1.0625rem;
+                    font-weight: 600;
+                    letter-spacing: -0.02em;
+                }
+
+                .scan-result-subtitle {
+                    margin-top: 2px;
+                    color: $color-muted-foreground;
+                    font-size: 0.8125rem;
+                }
+            }
+        }
+
+        .scan-result-details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 16px;
+            margin-top: 14px;
+            animation: scan-result-fade $duration-slow $ease-out 0.1s both;
+
+            .scan-result-detail {
+                min-width: 0;
+
+                &[data-wide] {
+                    grid-column: 1 / -1;
+                }
+
+                .scan-result-detail-label {
+                    color: $color-muted-foreground;
+                    font-size: 0.6875rem;
+                }
+
+                .scan-result-detail-value {
+                    font-weight: 500;
+                    overflow-wrap: anywhere;
+
+                    &[data-mono] {
+                        font-family: $font-mono;
+                        font-size: 0.8125rem;
+                    }
+
+                    .scan-result-seats {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 4px;
+
+                        .scan-result-seat {
+                            padding: 2px 6px;
+                            border: 1px solid $color-border;
+                            border-radius: $radius-sm;
+                            background: color-mix(in srgb, $color-background 80%, transparent);
+                            font-family: $font-mono;
+                            font-size: 0.75rem;
+                            font-style: normal;
+                            font-weight: 400;
+                        }
+                    }
+                }
+            }
+        }
+
+        &[data-outcome='ok'] {
+            border-color: $color-success-border;
+            background: $color-success-surface;
+
+            .scan-result-head .scan-result-icon {
+                background: $color-success;
+            }
+        }
+
+        &[data-outcome='used'] {
+            border-color: $color-warning-border;
+            background: $color-warning-surface;
+
+            .scan-result-head .scan-result-icon {
+                background: $color-warning;
+            }
+        }
+
+        &[data-outcome='checking'] .scan-result-message .scan-result-message-icon {
+            color: $color-foreground;
+            animation: scan-result-spin 0.9s linear infinite;
+        }
+
+        &[data-outcome='error'] {
+            border-color: $color-destructive-border;
+
+            .scan-result-message {
+                .scan-result-message-icon {
+                    color: $color-destructive;
+                }
+
+                .scan-result-message-title {
+                    color: $color-destructive-text;
+                }
+            }
+        }
+
+        &[data-outcome='bad'] {
+            border-color: $color-destructive-border;
+            background: $color-destructive-surface;
+            animation: scan-result-shake $duration-slow $ease-out;
+
+            .scan-result-head .scan-result-icon {
+                background: $color-destructive;
+            }
+        }
+
+        @include reduced-motion {
+            &,
+            .scan-result-message .scan-result-message-icon,
+            .scan-result-head .scan-result-icon,
+            .scan-result-details {
+                animation: none;
+            }
+        }
+    }
+
+    .scan-result-next {
+        width: 100%;
+        margin-top: auto;
+        height: 46px;
+        border-radius: $radius-xl;
+        visibility: hidden;
+
+        &[data-visible] {
+            visibility: visible;
+        }
+    }
+}

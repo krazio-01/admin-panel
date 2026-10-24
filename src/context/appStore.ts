@@ -1,4 +1,5 @@
 import type { DashboardSnapshot } from '@/types/admin';
+import type { CheckInResult, GateProgress } from '@/types/booking';
 import type { BookingState } from '@/utils/booking-form';
 
 export type ConnectionState = { failuresBySource: Record<string, number>; isSignedOut: boolean };
@@ -11,11 +12,23 @@ export type SignInState = { phase: SignInPhase; pulse: number; pulseTone: SignIn
 
 export type SignInEvent = 'focus' | 'blur' | 'keystroke' | 'submit' | 'fail' | 'succeed';
 
+export type CheckInCounts = Record<CheckInResult['outcome'], number>;
+
+export type ScannerState = {
+    result: CheckInResult | null;
+    scanKey: number;
+    counts: CheckInCounts;
+    error: string | null;
+    isChecking: boolean;
+};
+
 export type AppSlices = {
     booking: BookingState;
     dashboard: DashboardSnapshot;
     connection: ConnectionState;
     signIn: SignInState;
+    scanner: ScannerState;
+    gateProgress: GateProgress;
 };
 
 export type AppSliceKey = keyof AppSlices;
@@ -36,6 +49,13 @@ export type AppStore = {
 
 export const INITIAL_CONNECTION: ConnectionState = { failuresBySource: {}, isSignedOut: false };
 export const INITIAL_SIGN_IN: SignInState = { phase: 'idle', pulse: 0, pulseTone: 'soft' };
+export const INITIAL_SCANNER: ScannerState = {
+    result: null,
+    scanKey: 0,
+    counts: { checked_in: 0, already_checked_in: 0, invalid: 0 },
+    error: null,
+    isChecking: false,
+};
 
 const LOCKED_SIGN_IN_PHASES = new Set<SignInPhase>(['submitting', 'succeeded']);
 
@@ -65,6 +85,35 @@ export function advanceSignIn(state: SignInState, event: SignInEvent): SignInSta
         case 'succeed':
             return { phase: 'succeeded', pulse: nextPulse, pulseTone: 'success' };
     }
+}
+
+export function recordCheckIn(state: ScannerState, result: CheckInResult): ScannerState {
+    return {
+        result,
+        scanKey: state.scanKey + 1,
+        counts: { ...state.counts, [result.outcome]: state.counts[result.outcome] + 1 },
+        error: null,
+        isChecking: false,
+    };
+}
+
+export function recordCheckInFailure(state: ScannerState, error: string): ScannerState {
+    const isRepeat = state.result === null && state.error === error;
+
+    return {
+        ...state,
+        result: null,
+        scanKey: isRepeat ? state.scanKey : state.scanKey + 1,
+        error,
+        isChecking: false,
+    };
+}
+
+export function admitGuests(progress: GateProgress, guestCount: number): GateProgress {
+    return {
+        ...progress,
+        guestsIn: Math.min(progress.guestsIn + guestCount, progress.guestsExpected),
+    };
 }
 
 export function createAppStore(initialState: AppState): AppStore {
